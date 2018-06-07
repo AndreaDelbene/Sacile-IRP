@@ -10,6 +10,7 @@ namespace IRPAutobotti
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
