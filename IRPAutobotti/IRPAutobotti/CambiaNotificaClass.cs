@@ -10,6 +10,10 @@ namespace IRPAutobotti
 {
     class CambiaNotificaClass
     {
+        public CambiaNotificaClass()
+        {
+        }
+
         public void CambiaNotifica(int IdRunner, int IdVersione, SqlConnection conn)
         {
             //strcat

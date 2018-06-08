@@ -182,6 +182,7 @@ namespace IRPAutobotti
                         {
                             // TODO Creare funzione che cerca in due matrici se alla posizione (x,y) di entrambe si trovano due valori specifici.
                             // la ricerca avviene riga per riga e l'array di ritorno conterrà la posizione (x,y)
+                            //ciao
                         }
                     }
                 }

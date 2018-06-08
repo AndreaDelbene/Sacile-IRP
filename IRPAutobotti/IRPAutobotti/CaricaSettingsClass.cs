@@ -91,7 +91,8 @@ namespace IRPAutobotti
             else
             {
                 Console.WriteLine("Couldn't get this Table / CaricaSettings");
-                return null;
+                csStruct = new CaricaSettingsStruct();
+                return csStruct;
             }
             
         }
