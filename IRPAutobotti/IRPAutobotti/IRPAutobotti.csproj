@@ -46,6 +46,11 @@
     <Compile Include="Calcola_percorsoNewClass.cs" />
     <Compile Include="CambiaNotificaClass.cs" />
     <Compile Include="CaricaSettingsClass.cs" />
+    <Compile Include="DisponibilitaMezziClass.cs" />
+    <Compile Include="CreateViaggioNoMezzoClass.cs" />
+    <Compile Include="CreateViaggioClass.cs" />
+    <Compile Include="CreateVersionClass.cs" />
+    <Compile Include="CreateRunnerClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
