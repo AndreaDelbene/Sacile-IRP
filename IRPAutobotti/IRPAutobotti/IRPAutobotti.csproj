@@ -46,6 +46,12 @@
     <Compile Include="Calcola_percorsoNewClass.cs" />
     <Compile Include="CambiaNotificaClass.cs" />
     <Compile Include="CaricaSettingsClass.cs" />
+    <Compile Include="OrdinamentoMezziClass.cs" />
+    <Compile Include="OrdinamentoPVClass.cs" />
+    <Compile Include="OrdiniMenoMilleClass.cs" />
+    <Compile Include="PrendereOrdiniClass.cs" />
+    <Compile Include="PrendereValoriSogliaVariabiliClass.cs" />
+    <Compile Include="PrendiDistanzeClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

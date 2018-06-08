@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,6 @@ namespace IRPAutobotti
     {
         static void Main(string[] args)
         {
-<<<<<<< HEAD
-
-=======
             int attivo = 1;
             int baseCarico = 17;
             String data = "2018-05-01";
@@ -20,11 +18,11 @@ namespace IRPAutobotti
 
             //Carico i settings dal database
             //TODO insert databse connection
-            Object conn = "";
+            SqlConnection conn = ;
 
             CaricaSettingsClass caricaSettingsClass = new CaricaSettingsClass();
             // [GIACENZA_MIN,dens_BS,dens_D,dens_B95,dens_GA,dens_BD,CARICA,SCARICA,SCARICALITRO,V_MEDIA,MINxKM,TEMPO_MAX,MAXDROP,KM_MIN,DISTANZA_MAX_PVPV,ELLISSE,beta,esponente]
-            Object[] settings = caricaSettingsClass.caricaSettings(baseCarico, conn);
+            Object[] settings = caricaSettingsClass.CaricaSettings(baseCarico, conn);
             
             IdSettingsVariabiliClass idSettingsVariabiliClass = new IdSettingsVariabiliClass();
             // [IdSettings,MENOMILLE,RIEMPIMENTOMAX]
@@ -108,7 +106,7 @@ namespace IRPAutobotti
 
             // -----------------Chiusura connessione close(conn)------------------------
 
-            for(int t = 0; t < ((double[])idSettings[0]).Length; t++)
+            for(int t = 0; t < ((int[])idSettings[0]).Length; t++)
             {
                 var n_OrdiniOriginali = n_ordiniO;
                 var OrdiniOriginali = (double[])ordiniArray[2];
@@ -189,7 +187,6 @@ namespace IRPAutobotti
                 }
 
             }
->>>>>>> f95e6f4b52562a3215bc9f13d6f68662ec9e59bc
         }
     }
 }
