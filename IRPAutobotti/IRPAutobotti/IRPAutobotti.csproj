@@ -46,6 +46,7 @@
     <Compile Include="Calcola_percorsoNewClass.cs" />
     <Compile Include="CambiaNotificaClass.cs" />
     <Compile Include="CaricaSettingsClass.cs" />
+    <Compile Include="IdSettingsVariabiliClass.cs" />
     <Compile Include="DisponibilitaMezziClass.cs" />
     <Compile Include="CreateViaggioNoMezzoClass.cs" />
     <Compile Include="CreateViaggioClass.cs" />
