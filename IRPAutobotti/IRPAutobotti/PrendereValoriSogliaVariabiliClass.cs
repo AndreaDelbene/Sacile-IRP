@@ -31,8 +31,13 @@ namespace IRPAutobotti
             {
                 curs.Fill(tables);
             }
-            
-            string temp = tables.Rows[0]["soglie"].ToString();
+
+            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
+            string temp = "";
+            foreach (DataRow row in X.Rows)
+            {
+                temp = row["Soglie"].ToString();
+            }
             string[] s = temp.Split(';');
             vsvStruct.MENOMILLE = Convert.ToDouble(s[1]);
             vsvStruct.RIEMPIMENTOMAX = Convert.ToDouble(s[0]);
