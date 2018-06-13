@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AssegnazionePrioritaClass.cs" />
     <Compile Include="Calcola_percorsoNewClass.cs" />
+    <Compile Include="CalcoloViaggiClass.cs" />
     <Compile Include="CambiaNotificaClass.cs" />
     <Compile Include="CaricaSettingsClass.cs" />
     <Compile Include="gtsp0Class.cs" />

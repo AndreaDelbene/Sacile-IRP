@@ -4,6 +4,10 @@ namespace IRPAutobotti
 {
     class gtsp0Class
     {
+        public gtsp0Class()
+        {
+        }
+
         public int[] gtsp0(double[,] Pk)
         {
             int n = Pk.Length; //n==m

@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
     class gtsp1Class
     {
+        public gtsp1Class()
+        {
+        }
+
         public int[] gtsp1(double[,] Pkp)
         {
             int n = Pkp.Length;//n==m
