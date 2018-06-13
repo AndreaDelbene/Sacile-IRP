@@ -46,6 +46,8 @@
     <Compile Include="Calcola_percorsoNewClass.cs" />
     <Compile Include="CambiaNotificaClass.cs" />
     <Compile Include="CaricaSettingsClass.cs" />
+    <Compile Include="gtsp0Class.cs" />
+    <Compile Include="gtsp1Class.cs" />
     <Compile Include="IdSettingsVariabiliClass.cs" />
     <Compile Include="DisponibilitaMezziClass.cs" />
     <Compile Include="CreateViaggioNoMezzoClass.cs" />
