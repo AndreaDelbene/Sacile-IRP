@@ -11,7 +11,7 @@ namespace IRPAutobotti
     {
         public double[,] capton;
         public double[,] capmax;
-        public string[,] targa;
+        public int[,] targa;
     }
     class OrdinamentoMezziClass
     {
@@ -21,7 +21,7 @@ namespace IRPAutobotti
             omStruct = new OrdinamentoMezziStruct();
         }
 
-        public OrdinamentoMezziStruct OrdinamentoMezzi(double[] captontemp, double[] capmaxtemp, string[] targatemp)
+        public OrdinamentoMezziStruct OrdinamentoMezzi(double[] captontemp, double[] capmaxtemp, int[] targatemp)
         {
             int[] indexes = Enumerable.Range(0, captontemp.Length).ToArray();//creo un array di indici ordinati
             Array.Sort(captontemp, indexes);//ordino captontemp e allo stesso tempo ordino l'array di indici allo stesso modo
@@ -34,14 +34,14 @@ namespace IRPAutobotti
             //ottengo l'ordine decrescente invertendo gli array
             double[] captontempDecr = captontemp;
             double[] capmaxtempDecr = capmaxtemp;
-            string[] targatempDecr = targatemp;
+            int[] targatempDecr = targatemp;
             Array.Reverse(captontempDecr);
             Array.Reverse(capmaxtempDecr);
             Array.Reverse(targatempDecr);
 
             double[,] capton = new double[captontemp.Length,3];
             double[,] capmax = new double[captontemp.Length, 3];
-            string[,] targa = new string[captontemp.Length, 3];
+            int[,] targa = new int[captontemp.Length, 3];
 
 
             // riempo le matrici capton, capmax e targa con i rispettivi vettori crescenti e decrescenti

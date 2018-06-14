@@ -22,9 +22,17 @@ namespace IRPAutobotti
         }
         public PrendiPreferenzeStruct PrendiPreferenze(int baseCarico, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.getPreferenzePuntiVendita(" + baseCarico + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+
+            //connection
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "BIS.getPreferenzePuntiVendita";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@base", baseCarico);
+            comm.Connection = conn;
+
+            conn.Open();
+
             var tables = new DataTable();
             using (var curs = new SqlDataAdapter(comm))
             {

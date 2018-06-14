@@ -40,12 +40,9 @@ namespace IRPAutobotti
 
         public CaricaSettingsStruct CaricaSettings(int baseCarico, SqlConnection conn)
         {
-            //strcat
-            string p = "{call TIP.BIS.getSettingByDataBase(" + baseCarico.ToString() + ")}";
 
             //connection
             SqlCommand comm = new SqlCommand();
-            Console.Write(p);
             SqlDataReader reader;
             comm.CommandText = "BIS.getSettingByDataBase";
             comm.CommandType = CommandType.StoredProcedure;
@@ -94,6 +91,8 @@ namespace IRPAutobotti
             csStruct.MINxKM = MINxKM;
             csStruct.TEMPO_MAX = (int)reader["tempoMaxLavoro"];
             csStruct.MAXDROP = (int)reader["Corsia"];
+
+            reader.Close();
             return csStruct;
         }
     }

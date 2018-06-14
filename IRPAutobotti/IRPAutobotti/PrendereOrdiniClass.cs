@@ -27,26 +27,30 @@ namespace IRPAutobotti
         }
         public PrendereOrdiniStruct PrendereOrdini(int baseCarico, string data, double peso, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.getOrdiniGiornalieriPerSacile(" + data + "," + baseCarico + "," + peso + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+            //connection
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "BIS.getOrdiniGiornalieriPerSacile";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Parameters.AddWithValue("@base", baseCarico);
+            comm.Parameters.AddWithValue("@peso", peso);
+            comm.Connection = conn;
 
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
-            poStruct.pv = X.AsEnumerable().Select(r => r.Field<int>("codicePv")).ToArray();
-            poStruct.ordini = X.AsEnumerable().Select(r => r.Field<int>("QMille")).ToArray();
-            poStruct.ordiniD = X.AsEnumerable().Select(r => r.Field<int>("D")).ToArray();
-            poStruct.ordiniB95 = X.AsEnumerable().Select(r => r.Field<int>("B95")).ToArray();
-            poStruct.ordiniBS = X.AsEnumerable().Select(r => r.Field<int>("BS")).ToArray();
-            poStruct.ordiniBD = X.AsEnumerable().Select(r => r.Field<int>("BD")).ToArray();
-            poStruct.ordiniAlpino = X.AsEnumerable().Select(r => r.Field<int>("GA")).ToArray();
-            poStruct.ordiniBluAlpino = X.AsEnumerable().Select(r => r.Field<int>("GBA")).ToArray();
-            poStruct.ordinipiumeno = X.AsEnumerable().Select(r => r.Field<int>("modalit")).ToArray();
-            poStruct.MioOrdine= X.AsEnumerable().Select(r => r.Field<int>("IdMioOrdine")).ToArray();
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
+            poStruct.pv = (from IDataRecord r in reader select (int)r["codicePv"]).ToArray();
+            poStruct.ordini = (from IDataRecord r in reader select (int)r["QMille"]).ToArray();
+            poStruct.ordiniD = (from IDataRecord r in reader select (int)r["D"]).ToArray();
+            poStruct.ordiniB95 = (from IDataRecord r in reader select (int)r["B95"]).ToArray();
+            poStruct.ordiniBS = (from IDataRecord r in reader select (int)r["BS"]).ToArray();
+            poStruct.ordiniBD = (from IDataRecord r in reader select (int)r["BD"]).ToArray();
+            poStruct.ordiniAlpino = (from IDataRecord r in reader select (int)r["GA"]).ToArray();
+            poStruct.ordiniBluAlpino = (from IDataRecord r in reader select (int)r["GBA"]).ToArray();
+            poStruct.ordinipiumeno = (from IDataRecord r in reader select (int)r["modalit"]).ToArray();
+            poStruct.MioOrdine= (from IDataRecord r in reader select (int)r["IdMioOrdine"]).ToArray();
 
 
             return poStruct;

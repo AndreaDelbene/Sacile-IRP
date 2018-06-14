@@ -36,7 +36,7 @@ namespace IRPAutobotti
             opvStruct = new OrdinamentoPVStruct();
         }
 
-        public OrdinamentoPVStruct OrdinamentoPV(double[] od_dep_media, int[] pv, int[] ordini, double[,] Valore, double[][] od_pv_pv, int n_ordini, double[] od_dep_pv, double[] od_pv_dep, double[] ordinipiumeno, prodottomax, double[] peso, double[] ordiniD, double[] ordiniBD, double[] ordiniB95, double[] ordiniBS, double[] ordiniAlpino, double[] ordiniBluAlpino, MioOrdine , ordinati)
+        public OrdinamentoPVStruct OrdinamentoPV(double[] od_dep_media, int[] pv, int[] ordini, double[,] Valore, double[,] od_pv_pv, int n_ordini, double[] od_dep_pv, double[] od_pv_dep, double[] ordinipiumeno, int prodottomax, double[] peso, double[] ordiniD, double[] ordiniBD, double[] ordiniB95, double[] ordiniBS, double[] ordiniAlpino, double[] ordiniBluAlpino, int MioOrdine , int ordinati)
         {
             int[] indexes = Enumerable.Range(0, pv.Length).ToArray();
 

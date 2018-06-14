@@ -17,10 +17,21 @@ namespace IRPAutobotti
             setdbprefs('NullNumberRead', 'NaN');
             setdbprefs('NullStringRead', 'null');*/
 
-            string p = "{call TIP.BIS.createRunnerBySolution('"+ login + "'," + BaseDiCarico.ToString() + ",'" + data + "',sacile)}";
-            //connection
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+            // connection
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "BIS.createRunnerBySolution";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@generatore", login);
+            comm.Parameters.AddWithValue("@id_base", BaseDiCarico);
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Parameters.AddWithValue("@algo", "sacile");
+            comm.Connection = conn;
+
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
             var tables = new DataTable();
             using (var curs = new SqlDataAdapter(comm))
             {

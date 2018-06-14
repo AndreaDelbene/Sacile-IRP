@@ -12,7 +12,10 @@ namespace IRPAutobotti
     public struct PrendiDistanzeStruct
     {
         public DataTable od_pv_pv_completa;
-        od_dep_pv,od_pv_dep,od_pv_pv,preferenza_pv_pv
+        public double[] od_dep_pv;
+        public double[] od_pv_dep;
+        public double[] od_pv_pv;
+        public double[] preferenza_pv_pv;
     }
     class PrendiDistanzeClass
     {
@@ -23,11 +26,22 @@ namespace IRPAutobotti
             pdStruct = new PrendiDistanzeStruct();
         }
 
-        public PrendiDistanzeStruct PrendiDistanze(int baseCarico, string data, int n_ordini, int[] pv, preferenze, SqlConnection conn)
+        public PrendiDistanzeStruct PrendiDistanze(int baseCarico, string data, int n_ordini, int[] pv, DataTable preferenze, SqlConnection conn)
         {
-            string p = "{call TIP.BIS._FRA_GetTabDistance(" + baseCarico + "," + data + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+
+            // connection
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "BIS._FRA_GetTabDistance";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_base", baseCarico);
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Connection = conn;
+
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
             var tables = new DataTable();
             using (var curs = new SqlDataAdapter(comm))
             {
@@ -36,9 +50,13 @@ namespace IRPAutobotti
             DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
             pdStruct.od_pv_pv_completa = X;
 
-            int[] od_dep_pv = new int[n_ordini];
-            int[] od_pv_dep = new int[n_ordini];
-            for(int i = 0; i < n_ordini; i++)
+            double[] od_dep_pv = new double[n_ordini];
+            double[] od_pv_dep = new double[n_ordini];
+
+            double[] temp_od_dep_pv = new double[n_ordini];
+            double[] temp_od_pv_dep = new double[n_ordini];
+
+            for (int i = 0; i < n_ordini; i++)
             {
                 string exp1 = "p1 = " + baseCarico + " and p2 = " + pv[i];
                 string exp2 = "p1 = " + pv[i] + " and p2 = " + baseCarico;

@@ -13,7 +13,7 @@ namespace IRPAutobotti
         {
             int attivo = 1;
             int baseCarico = 17;
-            String data = "2018-05-01";
+            String data = "2018-04-11";
             String formatOut = "mm-dd-yyyy";
 
             //Carico i settings dal database
@@ -65,73 +65,75 @@ namespace IRPAutobotti
 
 
             // prendo gli ordini per la giornata
-            // [MioOrdine,pv,ordiniO,ordiniDO,ordiniBDO,ordiniB95O,ordiniBSO,ordiniAlpino,ordiniBluAlpino,ordinipiumeno]
+            // [MioOrdine,pv,ordini,ordiniD,ordiniBD,ordiniB95,ordiniBS,ordiniAlpino,ordiniBluAlpino,ordinipiumeno]
             PrendereOrdiniClass prendereOrdiniClass = new PrendereOrdiniClass();
-            PrendereOrdiniStruct ordiniArray = prendereOrdiniClass.PrendereOrdini(baseCarico, data, pesoDivisioneOrdini, conn);
-            var n_ordiniO = ordiniArray.ordini.Length;
+            PrendereOrdiniStruct ordiniStruct = prendereOrdiniClass.PrendereOrdini(baseCarico, data, pesoDivisioneOrdini, conn);
+            var n_ordini = ordiniStruct.ordini.Length;
 
             // quantita massima per ogni PV, per il rate di scarico (successivo)
             // numero di vettori che compongono la matrice: 6
-            double[][] prodottiArray = new double[n_ordiniO][];
-            for(int i = 0; i < 6; i++)
-            {
-                // inserisce ogni vettore da ordiniDO a ordiniBluAlpino nella matrice
-                // il +3 all'indice è dovuto al fatto che il vettore ordini contiene anche altri vettori che però non servono alla costruzione della matrice
-                Array.Copy((double[])ordiniArray[3+i], 0, prodottiArray, i+1, ((double[])ordiniArray[3+i]).Length);
-            }
+            // inserisce ogni vettore da ordiniDO a ordiniBluAlpino nella matrice
+            List<int[]> prodottiArray = new List<int[]>();
+            prodottiArray.Add(ordiniStruct.ordiniD);
+            prodottiArray.Add(ordiniStruct.ordiniBD);
+            prodottiArray.Add(ordiniStruct.ordiniB95);
+            prodottiArray.Add(ordiniStruct.ordiniBS);
+            prodottiArray.Add(ordiniStruct.ordiniAlpino);
+            prodottiArray.Add(ordiniStruct.ordiniBluAlpino);
+            prodottiArray.ToArray();
 
-            double[] prodottomax = new double[n_ordiniO];
-            for(int i = 0; i < n_ordiniO; i++)
+            double[] prodottomax = new double[n_ordini];
+            for(int i = 0; i < n_ordini; i++)
             {
                 prodottomax[i] = prodottiArray[i].Max();
             }
 
             // prendo la matrice delle preferenze
             PrendiPreferenzeClass prendiPreferenzeClass = new PrendiPreferenzeClass();
-            var preferenze = prendiPreferenzeClass.PrendiPreferenze(baseCarico, conn);
+            PrendiPreferenzeStruct preferenze = prendiPreferenzeClass.PrendiPreferenze(baseCarico, conn);
 
             //Ordinamento mezzi
             // ordino in modo crescente e decrescente i miei mezzi per tonellate e capacità in KL
             //[capton, capmax, targa]
             OrdinamentoMezziClass ordinamentoMezziClass = new OrdinamentoMezziClass();
-            Object[] ordinamentoMezzi = ordinamentoMezziClass.OrdinamentoMezzi(captontemp, capmaxtemp, targatemp);
+            OrdinamentoMezziStruct ordinamentoMezzi = ordinamentoMezziClass.OrdinamentoMezzi(captontemp, capmaxtemp, targatemp);
 
             // Caricamento matrici delle distanze
             // [od_dep_pv,od_pv_dep,od_pv_pv,od_pv_pv_completa,preferenza_pv_pv]
             PrendiDistanzeClass prendiDistanzeClass = new PrendiDistanzeClass();
-            Object[] distanze = prendiDistanzeClass.PrendiDistanze(baseCarico, data, n_ordiniO, (String[])ordiniArray[1], preferenze, conn);
-            double[] peso = new double[n_ordiniO];
-            var ordinati = (double[])ordiniArray[2];
-            var targaOriginale = (String)ordinamentoMezzi[2];
+            PrendiDistanzeStruct distanze = prendiDistanzeClass.PrendiDistanze(baseCarico, data, n_ordini, ordiniStruct.pv, preferenze.preferenze, conn);
+            double[] peso = new double[n_ordini];
+            var ordinati = ordiniStruct.ordini;
+            var targaOriginale = ordinamentoMezzi.targa;
 
             CreateRunnerClass createRunnerClass = new CreateRunnerClass();
-            var IdRunner = createRunnerClass.CreateRunner("sacile", baseCarico, data, conn);
+            int IdRunner = createRunnerClass.CreateRunner("sacile", baseCarico, data, conn);
 
             // -----------------Chiusura connessione close(conn)------------------------
 
-            for(int t = 0; t < ((int[])idSettings[0]).Length; t++)
+            for(int t = 0; t < idSettings.Id.Length; t++)
             {
-                var n_OrdiniOriginali = n_ordiniO;
-                var OrdiniOriginali = (double[])ordiniArray[2];
-                var OrdiniOriginaliD = (double[])ordiniArray[3];
-                var OrdiniOriginaliBD = (double[])ordiniArray[4];
-                var OrdiniOriginaliB95 = (double[])ordiniArray[5];
-                var OrdiniOriginaliBS = (double[])ordiniArray[6];
-                var OrdiniOriginaliAlpino = (double[])ordiniArray[7];
-                var OrdiniOriginaliBluAlpino = (double[])ordiniArray[8];
-                var MioOrdineOriginale = (double[])ordiniArray[0];
+                var n_OrdiniOriginali = n_ordini;
+                var OrdiniOriginali = ordiniStruct.ordini;
+                var OrdiniOriginaliD = ordiniStruct.ordiniD;
+                var OrdiniOriginaliBD = ordiniStruct.ordiniBD;
+                var OrdiniOriginaliB95 = ordiniStruct.ordiniB95;
+                var OrdiniOriginaliBS = ordiniStruct.ordiniBS;
+                var OrdiniOriginaliAlpino = ordiniStruct.ordiniAlpino;
+                var OrdiniOriginaliBluAlpino = ordiniStruct.ordiniBluAlpino;
+                var MioOrdineOriginale = ordiniStruct.MioOrdine;
 
                 // TOGLIAMO MILLE A TUTTI I PRODOTTI CHA HANNO UNA QUANTITA SOPRA LA SOGLIA MENOMILLE
                 // [ordini, ordiniD, ordiniBD, ordiniB95, ordiniBS, ordiniAlpino, ordiniBluAlpino, peso]
                 OrdiniMenoMilleClass ordiniMenoMilleClass = new OrdiniMenoMilleClass();
-                double[] MENOMILLE = (double[])idSettings[1];
-                Object[] ordiniMenoMille = ordiniMenoMilleClass.OrdiniMenoMille(n_OrdiniOriginali, MENOMILLE[t], OrdiniOriginali, OrdiniOriginaliD, OrdiniOriginaliBD, OrdiniOriginaliB95, OrdiniOriginaliBS, OrdiniOriginaliAlpino, OrdiniOriginaliBluAlpino, (double)settings[2], (double)settings[5], (double)settings[1], (double)settings[3]);
+                double[] MENOMILLE = idSettings.MENOMILLE;
+                OrdiniMenoMilleStruct ordiniMenoMille = ordiniMenoMilleClass.OrdiniMenoMille(n_OrdiniOriginali, (int)MENOMILLE[t], OrdiniOriginali, OrdiniOriginaliD, OrdiniOriginaliBD, OrdiniOriginaliB95, OrdiniOriginaliBS, OrdiniOriginaliAlpino, OrdiniOriginaliBluAlpino, settings.dens_D, settings.dens_BD, settings.dens_BS, settings.dens_B95);
 
                 //ASSEGNO PRIORITA'
                 // sommo l'andata e il ritorno di un pv dalla base, e prendo quello che ha valore maggiore
                 // [p, Valore, od_dep_media]
                 AssegnazionePrioritaClass assegnazionePrioritaClass = new AssegnazionePrioritaClass();
-                Object[] priorita = assegnazionePrioritaClass.AssegnazionePriorita((double[])distanze[0], (double[])distanze[1], (double[])distanze[2], n_OrdiniOriginali, peso, maxcap, (double[])ordiniMenoMille[0], (int)settings[17], (double)settings[15], (double)settings[16], (double[])distanze[4], (int)settings[14]);
+                Object[] priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
 
                 //ORDINAMENTO DEI PV
                 // ordinamento dal più distante

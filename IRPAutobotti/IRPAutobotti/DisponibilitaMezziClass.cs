@@ -23,31 +23,42 @@ namespace IRPAutobotti
 
         public DisponibilitaMezziStruct DisponibilitaMezzi(int attivo, string data, int baseCarico, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.DisponibilitaMezzi(" + attivo.ToString() + ",'" + data.ToString() + "'," + baseCarico.ToString() + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
 
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
+            //connection
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "BIS.DisponibilitaMezzi";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@attivo", attivo);
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Parameters.AddWithValue("@idBase", baseCarico);
+            comm.Connection = conn;
+
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
             List<int[]> scompartiAnt = new List<int[]>();
             List<int[]> scompartiPost = new List<int[]>();
             //capacità tonnellate
-            int[] turno = X.AsEnumerable().Select(r => r.Field<int>("Turno")).ToArray();
+            int[] turno = (from IDataRecord r in reader
+                           select (int)r["Turno"]
+                            ).ToArray();
             double[] captonAnt = new double[turno.Length];
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma
             double[] captonTemp = new double[turno.Length];
-            int[] IdM = X.AsEnumerable().Select(r => r.Field<int>("Id")).ToArray();
+            int[] IdM = (from IDataRecord r in reader
+                         select (int)r["Id"]
+                            ).ToArray();
             // 17 è la colonna finale degli scomparti anteriori
             //prendo le colonne da 8 a 18 per gli Anteriori, da 20 a 30 per i Posteriori
             for (int i=0;i<10;i++)
             {
-                scompartiAnt.Add(X.AsEnumerable().Select(r => r.Field<int>(X.Columns[8 + i].ColumnName.ToString())).ToArray());
-                scompartiPost.Add(X.AsEnumerable().Select(r => r.Field<int>(X.Columns[20 + i].ColumnName.ToString())).ToArray());
+                int[] scompartiAntTemp = (from IDataRecord r in reader select (int)r.GetValue(8 + i)).ToArray();
+                int[] scompartiPostTemp = (from IDataRecord r in reader select (int)r.GetValue(20 + i)).ToArray();
+                scompartiAnt.Add(scompartiAntTemp);
+                scompartiPost.Add(scompartiPostTemp);
             }
             int[,] scomparti = new int[scompartiPost.Count, scompartiPost[0].Length];
             // sommo quindi membro a membro ogni elemento e lo metto dentro ad una matrice di interi
@@ -59,8 +70,8 @@ namespace IRPAutobotti
                 }
             }
             // prendo i valori dalle colonne
-            captonAnt = X.AsEnumerable().Select(r => r.Field<double>("PortUtilAnt")).ToArray();
-            captonPost = X.AsEnumerable().Select(r => r.Field<double>("PortUtiPost")).ToArray();
+            captonAnt = (from IDataRecord r in reader select (double)r["PortUtilAnt"]).ToArray();
+            captonPost = (from IDataRecord r in reader select (double)r["PortUtilPost"]).ToArray();
             for(int i=0;i<captonAnt.Length;i++)
             {
                 //somma membro a membro
@@ -69,8 +80,8 @@ namespace IRPAutobotti
             //copio nella struct
             dmStruct.captontemp = captonTemp;
             //stesso ragionamento per le targhe
-            string[] targaAnt = X.AsEnumerable().Select(r => r.Field<string>("targaAnt")).ToArray();
-            string[] targaPost = X.AsEnumerable().Select(r => r.Field<string>("targaPost")).ToArray();
+            string[] targaAnt = (from IDataRecord r in reader select (string)r["targaAnt"]).ToArray();
+            string[] targaPost = (from IDataRecord r in reader select (string)r["targaPost"]).ToArray();
             //creo le variabili temporanee
             string[] targaTemp1 = new string[targaAnt.Length];
             string[] targaTemp2 = new string[targaAnt.Length];
