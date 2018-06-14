@@ -1,12 +1,13 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace IRPAutobotti
 {
     public struct Calcola_percorsoNewStruct
     {
-        public double[] lun;
-        public int[,] sequenza;
+        public List<double> lun;
+        public List<List<double>> sequenza;
         public int n_viaggio;
     }
     class Calcola_percorsoNewClass
@@ -17,16 +18,16 @@ namespace IRPAutobotti
             cpnStruct = new Calcola_percorsoNewStruct();
         }
 
-        public Calcola_percorsoNewStruct calcola_percorsoNew(int baseCarico, DataTable od_pv_pv_completa, int[] viaggio_temp, 
-            int[,] sequenza, double[] lun,int n_viaggio)
+        public Calcola_percorsoNewStruct calcola_percorsoNew(int baseCarico, DataTable od_pv_pv_completa, List<double> viaggio_temp,
+            List<List<double>> sequenza, List<double> lun,int n_viaggio)
         {
             //assegno le variabili in Input a quelle nella struct di ritorno
             cpnStruct.lun = lun;
             cpnStruct.sequenza = sequenza;
             cpnStruct.n_viaggio = n_viaggio;
             //calcolo indicatori di prestazione
-            int[] giro = viaggio_temp;
-            int g = giro.Length;
+            List<double> giro = viaggio_temp;
+            int g = giro.Count;
             double[] temp_od_dep_pv = new double[g];
             double[] temp_od_pv_dep = new double[g];
             double[,] temp_od_pv_pv = new double[g, g];
@@ -88,9 +89,9 @@ namespace IRPAutobotti
             for(int i=0;i<tour.Length;i++)
             {
                 if(tour[i]==1)
-                    cpnStruct.sequenza[n_viaggio, i] = baseCarico;
+                    cpnStruct.sequenza[n_viaggio][i] = baseCarico;
                 else
-                    cpnStruct.sequenza[n_viaggio, i] = giro[tour[i]-1];
+                    cpnStruct.sequenza[n_viaggio][i] = giro[tour[i]-1];
             }
             return cpnStruct;
         }
