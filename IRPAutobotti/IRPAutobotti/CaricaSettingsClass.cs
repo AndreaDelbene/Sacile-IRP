@@ -9,18 +9,18 @@ namespace IRPAutobotti
     public struct CaricaSettingsStruct
     {
         public int GIACENZA_MIN;
-        public double[] dens_BS;
-        public double[] dens_D;
-        public double[] dens_B95;
-        public double[] dens_GA;
-        public double[] dens_BD;
-        public int[] CARICA;
-        public int[] SCARICA;
-        public double[] SCARICALITRO;
-        public int[] V_MEDIA;
-        public double[] MINxKM;
-        public int[] TEMPO_MAX;
-        public int[] MAXDROP;
+        public double dens_BS;
+        public double dens_D;
+        public double dens_B95;
+        public double dens_GA;
+        public double dens_BD;
+        public int CARICA;
+        public int SCARICA;
+        public double SCARICALITRO;
+        public int V_MEDIA;
+        public double MINxKM;
+        public int TEMPO_MAX;
+        public int MAXDROP;
         public int KM_MIN;
         public int DISTANZA_MAX_PVPV;
         public double ELLISSE;
@@ -38,24 +38,39 @@ namespace IRPAutobotti
             csStruct = new CaricaSettingsStruct();
         }
 
-        public CaricaSettingsStruct CaricaSettings(int baseCarico,SqlConnection conn)
+        public CaricaSettingsStruct CaricaSettings(int baseCarico, SqlConnection conn)
         {
             //strcat
             string p = "{call TIP.BIS.getSettingByDataBase(" + baseCarico.ToString() + ")}";
+
             //connection
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
-            //var curs = comm.ExecuteScalar();
-            //SqlDataReader curs = comm.ExecuteReader();
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
+            SqlCommand comm = new SqlCommand();
+            Console.Write(p);
+            SqlDataReader reader;
+            comm.CommandText = "BIS.getSettingByDataBase";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_base", baseCarico);
+            comm.Connection = conn;
+
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
+
+            // Lettura riga per riga del risultato
+            /*while (reader.HasRows)
             {
-                curs.Fill(tables);
-            }
-            //prendo la tabella "Data" (colonna della tabella tables) 
-            //e la converto in una DataTable
-            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
-            // parametri algortimo
+                while (reader.Read())
+                {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.Write(reader.GetValue(i).ToString() + " - ");
+                    }
+                    Console.Write("\n");
+                }
+                reader.NextResult();
+            }*/
+
             csStruct.GIACENZA_MIN = 20;
             csStruct.KM_MIN = 90;
             csStruct.DISTANZA_MAX_PVPV = 30;
@@ -63,38 +78,23 @@ namespace IRPAutobotti
             csStruct.beta = 0.1; // 0 solo valore 1 no valore solo preferenza,
             csStruct.esponente = 3;
 
-            if(X!=null)
-            {
-                //Parsing usando sintassi LINQ, prende la Colonna di X che corrisponde al nome indicato
-                // e per ogni elemento r di tipo <type> effettua il casting e mette il tutto in un array
-                csStruct.dens_BS = X.AsEnumerable().Select(r => r.Field<double>("densitaBB")).ToArray();
-                csStruct.dens_D = X.AsEnumerable().Select(r => r.Field<double>("densitaG")).ToArray();
-                csStruct.dens_B95 = X.AsEnumerable().Select(r => r.Field<double>("densitaB")).ToArray();
-                csStruct.dens_BD = X.AsEnumerable().Select(r => r.Field<double>("densitaBD")).ToArray();
-                csStruct.dens_GA = X.AsEnumerable().Select(r => r.Field<double>("densitaGA")).ToArray();
+            reader.Read();
+            csStruct.dens_BS = (double)(decimal)reader["densitaBB"];
+            csStruct.dens_D = (double)(decimal)reader["densitaG"];
+            csStruct.dens_B95 = (double)(decimal)reader["densitaB"];
+            csStruct.dens_BD = (double)(decimal)reader["densitaBD"];
+            csStruct.dens_GA = (double)(decimal)reader["densitaGA"];
 
-                csStruct.CARICA = X.AsEnumerable().Select(r => r.Field<int>("tempoCarico")).ToArray();
-                csStruct.SCARICA = X.AsEnumerable().Select(r => r.Field<int>("tempoScarico")).ToArray();
-                csStruct.SCARICALITRO = X.AsEnumerable().Select(r => r.Field<double>("rateScarico")).ToArray();
-                int[] V_MEDIA = X.AsEnumerable().Select(r => r.Field<int>("velMedia")).ToArray();
-                double[] MINxKM = new double[V_MEDIA.Length];
-                for(int i=0;i<V_MEDIA.Length;i++)
-                {
-                    MINxKM[i] = 60 / V_MEDIA[i];
-                }
-                csStruct.V_MEDIA = V_MEDIA;
-                csStruct.MINxKM = MINxKM;
-                csStruct.TEMPO_MAX = X.AsEnumerable().Select(r => r.Field<int>("tempoMaxLavoro")).ToArray();
-                csStruct.MAXDROP = X.AsEnumerable().Select(r => r.Field<int>("Corsia")).ToArray();
-                return csStruct;
-            }
-            else
-            {
-                Console.WriteLine("Couldn't get this Table / CaricaSettings");
-                csStruct = new CaricaSettingsStruct();
-                return csStruct;
-            }
-            
+            csStruct.CARICA = (int)reader["tempoCarico"];
+            csStruct.SCARICA = (int)reader["tempoScarico"];
+            csStruct.SCARICALITRO = (double)(decimal)reader["rateScarico"];
+            int V_MEDIA = (int)reader["velMedia"];
+            double MINxKM = 60 / V_MEDIA;
+            csStruct.V_MEDIA = V_MEDIA;
+            csStruct.MINxKM = MINxKM;
+            csStruct.TEMPO_MAX = (int)reader["tempoMaxLavoro"];
+            csStruct.MAXDROP = (int)reader["Corsia"];
+            return csStruct;
         }
     }
 }

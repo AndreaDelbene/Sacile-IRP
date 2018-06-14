@@ -17,8 +17,11 @@ namespace IRPAutobotti
             String formatOut = "mm-dd-yyyy";
 
             //Carico i settings dal database
-            //TODO insert databse connection
-            SqlConnection conn = new SqlConnection("Data Source=(local);Initial Catalog=matlab;");
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString =
+            "Server=localhost\\SQLEXPRESS;" +
+            "Database=Matlab;" +
+            "Integrated Security=True";
 
             CaricaSettingsClass caricaSettingsClass = new CaricaSettingsClass();
             // [GIACENZA_MIN,dens_BS,dens_D,dens_B95,dens_GA,dens_BD,CARICA,SCARICA,SCARICALITRO,V_MEDIA,MINxKM,TEMPO_MAX,MAXDROP,KM_MIN,DISTANZA_MAX_PVPV,ELLISSE,beta,esponente]
