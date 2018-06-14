@@ -18,27 +18,27 @@ namespace IRPAutobotti
 
             //Carico i settings dal database
             //TODO insert databse connection
-            SqlConnection conn = ;
+            SqlConnection conn = new SqlConnection("Data Source=(local);Initial Catalog=matlab;");
 
             CaricaSettingsClass caricaSettingsClass = new CaricaSettingsClass();
             // [GIACENZA_MIN,dens_BS,dens_D,dens_B95,dens_GA,dens_BD,CARICA,SCARICA,SCARICALITRO,V_MEDIA,MINxKM,TEMPO_MAX,MAXDROP,KM_MIN,DISTANZA_MAX_PVPV,ELLISSE,beta,esponente]
-            Object[] settings = caricaSettingsClass.CaricaSettings(baseCarico, conn);
+            CaricaSettingsStruct settings = caricaSettingsClass.CaricaSettings(baseCarico, conn);
             
             IdSettingsVariabiliClass idSettingsVariabiliClass = new IdSettingsVariabiliClass();
             // [IdSettings,MENOMILLE,RIEMPIMENTOMAX]
-            Object[] idSettings = idSettingsVariabiliClass.IdSettingsVariabili(baseCarico, conn);
+            IdSettingsVariabiliStruct idSettings = idSettingsVariabiliClass.IdSettingsVariabili(baseCarico, conn);
 
             //prendo i camion disponibili per la giornata
             DisponibilitaMezziClass disponibilitaMezziClass = new DisponibilitaMezziClass();
             // [IdM,scomparti,captontemp,targatemp1,temp2]
-            Object[] disponibilitaMezzi = disponibilitaMezziClass.DisponibilitaMezzi(attivo, data, baseCarico, conn);
-            double[][] scomparti = (double[][])disponibilitaMezzi[1];
+            DisponibilitaMezziStruct disponibilitaMezzi = disponibilitaMezziClass.DisponibilitaMezzi(attivo, data, baseCarico, conn);
+            int[,] scomparti = disponibilitaMezzi.scomparti;
             double[] capmaxtemp = new double[scomparti.Length];
-            for (int i = 0; i < scomparti.Length; i++)
+            for (int i = 0; i < scomparti.GetLength(1); i++)
             {
-                for(int j = 0; j < scomparti[i].Length; j++)
+                for(int j = 0; j < scomparti.GetLength(0); j++)
                 {
-                    capmaxtemp[i] += scomparti[i][j];
+                    capmaxtemp[i] += scomparti[i,j];
                 }
                 capmaxtemp[i] /= 1000;
             }
@@ -54,7 +54,7 @@ namespace IRPAutobotti
             double maxcap = capmaxtemp.Max();
 
             //calcolo della moda di captontemp (elemento con maggior frequenza)
-            double[] captontemp= (double[])disponibilitaMezzi[2];
+            double[] captontemp=disponibilitaMezzi.captontemp;
             double pesoDivisioneOrdini = captontemp.GroupBy(item => item).OrderByDescending(g => g.Count()).Select(g => g.Key).First();  // TODO verificare che la moda ritorni il valore più piccolo in caso di frequenze tra due elementi uguali
 
             for (int i = 0; i < captontemp.Length; i++)
@@ -64,8 +64,8 @@ namespace IRPAutobotti
             // prendo gli ordini per la giornata
             // [MioOrdine,pv,ordiniO,ordiniDO,ordiniBDO,ordiniB95O,ordiniBSO,ordiniAlpino,ordiniBluAlpino,ordinipiumeno]
             PrendereOrdiniClass prendereOrdiniClass = new PrendereOrdiniClass();
-            Object[] ordiniArray = prendereOrdiniClass.PrendereOrdini(baseCarico, data, pesoDivisioneOrdini, conn);
-            var n_ordiniO = ((double[])ordiniArray[2]).Length;
+            PrendereOrdiniStruct ordiniArray = prendereOrdiniClass.PrendereOrdini(baseCarico, data, pesoDivisioneOrdini, conn);
+            var n_ordiniO = ordiniArray.ordini.Length;
 
             // quantita massima per ogni PV, per il rate di scarico (successivo)
             // numero di vettori che compongono la matrice: 6
@@ -180,13 +180,13 @@ namespace IRPAutobotti
                     {
                         if(viaggio[ii][j] != 0)
                         {
+                            int i = 0;
                             // TODO Creare funzione che cerca in due matrici se alla posizione (x,y) di entrambe si trovano due valori specifici.
                             // la ricerca avviene riga per riga e l'array di ritorno conterrà la posizione (x,y)
                             //ciao
                         }
                     }
                 }
-
             }
         }
     }
