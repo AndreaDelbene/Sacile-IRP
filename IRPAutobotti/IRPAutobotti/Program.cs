@@ -82,7 +82,7 @@ namespace IRPAutobotti
             prodottiArray.Add(ordiniStruct.ordiniBluAlpino);
             prodottiArray.ToArray();
 
-            double[] prodottomax = new double[n_ordini];
+            int[] prodottomax = new int[n_ordini];
             for(int i = 0; i < n_ordini; i++)
             {
                 prodottomax[i] = prodottiArray[i].Max();
@@ -133,14 +133,14 @@ namespace IRPAutobotti
                 // sommo l'andata e il ritorno di un pv dalla base, e prendo quello che ha valore maggiore
                 // [p, Valore, od_dep_media]
                 AssegnazionePrioritaClass assegnazionePrioritaClass = new AssegnazionePrioritaClass();
-                Object[] priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
+                AssegnazionePrioritaStruct priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
 
                 //ORDINAMENTO DEI PV
                 // ordinamento dal più distante
                 // ordino in maniera decrescente per il valore della prima colonna
                 // [MioOrdine_ord, ordini_ord, pv_ord, valore_ord, od_pv_pv_ord, od_dep_pv_ord, od_pv_dep_ord, ordinipeso_ord, ordini_piumeno_ord, max_product_ord, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord, ordinati_ord]
                 OrdinamentoPVClass ordinamentoPVClass = new OrdinamentoPVClass();
-                Object[] ordinamentoPV = ordinamentoPVClass.OrdinamentoPV((double)priorita[2], (String[])ordiniArray[1], (double[])ordiniMenoMille[0], (double[][])priorita[1], (double[])distanze[2], n_OrdiniOriginali, (double[][])distanze[0], (double[][])distanze[1], (double[])ordiniArray[9], prodottomax, peso, (double[])ordiniArray[3], (double[])ordiniArray[4], (double[])ordiniArray[5], (double[])ordiniArray[6], (double[])ordiniArray[7], (double[])ordiniArray[8], (double[])ordiniArray[0], ordinati);
+                OrdinamentoPVStruct ordinamentoPV = ordinamentoPVClass.OrdinamentoPV(priorita.od_dep_media, ordiniStruct.pv, ordiniMenoMille.ordini, priorita.Valore, distanze.od_pv_pv, n_OrdiniOriginali, distanze.od_dep_pv, distanze.od_pv_dep, ordiniStruct.ordinipiumeno, prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
 
                 // ALGORITMO
                 conn = "";
