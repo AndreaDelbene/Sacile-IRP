@@ -31,14 +31,8 @@ namespace IRPAutobotti
             conn.Open();
 
             reader = comm.ExecuteReader();
-
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            int[] temp = tables.AsEnumerable().Select(r => r.Field<int>("Data")).ToArray();
-            int IdRunner = temp[2];
+            
+            int IdRunner = (int)reader["Data"];
             return IdRunner;
         }
     }
