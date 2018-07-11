@@ -13,9 +13,6 @@ namespace IRPAutobotti
 
         public int CreateRunner(string login,int BaseDiCarico,string data,SqlConnection conn)
         {
-            /*setdbprefs('DataReturnFormat', 'numeric');
-            setdbprefs('NullNumberRead', 'NaN');
-            setdbprefs('NullStringRead', 'null');*/
 
             // connection
             SqlCommand comm = new SqlCommand();

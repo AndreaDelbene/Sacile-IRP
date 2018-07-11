@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace IRPAutobotti
 {
@@ -12,25 +11,23 @@ namespace IRPAutobotti
 
         public int CreateViaggioNoMezzo(int IdVersione, string data, double lun, double tempo, int IdM, SqlConnection conn)
         {
-            string p = "{call Matlab.BIS.createViaggioSolSacile(" + IdVersione.ToString() + ",'" + data + "'," + lun.ToString() + "," +
-                tempo.ToString() + "," + IdM.ToString() + ")}";
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "Matlab.BIS.createViaggioSolSacile";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_versione", IdVersione);
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Parameters.AddWithValue("@km", lun);
+            comm.Parameters.AddWithValue("@tempo", tempo);
+            comm.Parameters.AddWithValue("@idMezzo", IdM);
 
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
-            var tables = new DataTable();
-            try
-            {
-                using (var curs = new SqlDataAdapter(comm))
-                {
-                    curs.Fill(tables);
-                }
-            }
-            catch
-            {
-                int y = 1;
-            }
-            int[] temp = tables.AsEnumerable().Select(r => r.Field<int>("Data")).ToArray();
-            int IdViaggio = temp[2];
+            comm.Connection = conn;
+
+            conn.Open();
+           
+            reader = comm.ExecuteReader();
+          
+            int IdViaggio = (int)reader["Data"];
             return IdViaggio;
         }
     }

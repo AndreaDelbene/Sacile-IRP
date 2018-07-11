@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace IRPAutobotti
 {
@@ -10,13 +11,16 @@ namespace IRPAutobotti
 
         public void CambiaNotifica(int IdRunner, int IdVersione, SqlConnection conn)
         {
-            //strcat
-            string p = "{call Matlab.BIS.changeNotification(" + IdRunner.ToString() + "," +
-                IdVersione.ToString() + ")}";
-            //connection
-            SqlCommand comm = new SqlCommand(p,conn);
-            comm.ExecuteNonQuery();
-            //conn.Close();
+            SqlCommand comm = new SqlCommand();
+            comm.CommandText = "Matlab.BIS.changeNotification";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_runner", IdRunner);
+            comm.Parameters.AddWithValue("@id_versione", IdVersione);
+            comm.Connection = conn;
+
+            conn.Open();
+
+            comm.ExecuteReader();
         }
     }
 }

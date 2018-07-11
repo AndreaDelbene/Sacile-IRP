@@ -12,22 +12,26 @@ namespace IRPAutobotti
 
         public int CreateVersion(int baseCarico, string login, string data, int IdSetting, int IdRunner, SqlConnection conn)
         {
-            /*setdbprefs('DataReturnFormat', 'numeric');
-            setdbprefs('NullNumberRead', 'NaN');
-            setdbprefs('NullStringRead', 'null');*/
 
-            string p = "{call Matlab.BIS.createVersionSacile(" + baseCarico.ToString() + ",'" + login + "','" + data + "'," +
-                 IdSetting.ToString() + "," + IdRunner.ToString() + ")}";
-            //connection
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            int[] temp = tables.AsEnumerable().Select(r => r.Field<int>("Data")).ToArray();
-            int IdVersion = temp[2];
+
+            SqlCommand comm = new SqlCommand();
+            SqlDataReader reader;
+            comm.CommandText = "Matlab.BIS.createVersionSacile";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_base", baseCarico);
+            comm.Parameters.AddWithValue("@generatore", login);
+            comm.Parameters.AddWithValue("@data", data);
+            comm.Parameters.AddWithValue("@idSettingVariabili", IdSetting);
+            comm.Parameters.AddWithValue("@id_runner", IdRunner);
+            
+            comm.Connection = conn;
+
+            conn.Open();
+
+            reader = comm.ExecuteReader();
+
+           
+            int IdVersion = (int)reader["Data"];
             return IdVersion;
         }
     }

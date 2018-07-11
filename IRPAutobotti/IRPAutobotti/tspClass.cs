@@ -19,7 +19,7 @@ namespace IRPAutobotti
             tspStruct = new TspStruct();
         }
 
-        public TspStruct tsp(int N, double rho, double alpha, int[,] A, int traj)
+        public TspStruct tsp(int N, double rho, double alpha, double[,] A, int traj)
         {
             int[] I = Enumerable.Range(0, S.Length).ToArray();  // Indexes of S
 

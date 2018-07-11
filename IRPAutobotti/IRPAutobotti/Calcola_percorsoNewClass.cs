@@ -81,11 +81,11 @@ namespace IRPAutobotti
                         od[i, j] = temp_od_pv_pv[i-1, j-1];
                 }
             }
-            tspStruct returnStruct = new tspStruct();
+            TspStruct returnStruct = new TspStruct();
             tspClass t = new tspClass();
             returnStruct = t.tsp(1000, 0.05, 0.8, od, 0);
-            int[] tour = returnStruct.tour;
-            cpnStruct.lun[n_viaggio] = returnStruct.lunTsp;
+            int[] tour = returnStruct.pi;
+            cpnStruct.lun[n_viaggio] = returnStruct.lunghezza;
             for(int i=0;i<tour.Length;i++)
             {
                 if(tour[i]==1)
