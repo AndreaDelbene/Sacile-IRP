@@ -16,7 +16,7 @@ namespace IRPAutobotti
             setdbprefs('NullNumberRead', 'NaN');
             setdbprefs('NullStringRead', 'null');*/
 
-            string p = "{call TIP.BIS.createVersionSacile(" + baseCarico.ToString() + ",'" + login + "','" + data + "'," +
+            string p = "{call Matlab.BIS.createVersionSacile(" + baseCarico.ToString() + ",'" + login + "','" + data + "'," +
                  IdSetting.ToString() + "," + IdRunner.ToString() + ")}";
             //connection
             SqlCommand comm = new SqlCommand(p, conn);

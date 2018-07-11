@@ -27,7 +27,7 @@ namespace IRPAutobotti
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS.DisponibilitaMezzi";
+            comm.CommandText = "Matlab.BIS.DisponibilitaMezzi";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@attivo", attivo);
             comm.Parameters.AddWithValue("@data", data);

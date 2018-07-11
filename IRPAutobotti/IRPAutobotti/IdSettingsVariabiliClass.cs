@@ -29,7 +29,7 @@ namespace IRPAutobotti
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS.getSettingVariabili";
+            comm.CommandText = "Matlab.BIS.getSettingVariabili";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_base", baseCarico);
             comm.Connection = conn;
@@ -48,7 +48,7 @@ namespace IRPAutobotti
             for (int i=0;i<Id.Length;i++)
             {
 
-                comm.CommandText = "BIS.getSettingVariabiliById";
+                comm.CommandText = "Matlab.BIS.getSettingVariabiliById";
                 comm.CommandType = CommandType.StoredProcedure;
                 comm.Parameters.AddWithValue("@id_base", Id[i]);
                 comm.Connection = conn;

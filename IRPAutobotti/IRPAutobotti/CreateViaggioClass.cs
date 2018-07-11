@@ -12,7 +12,7 @@ namespace IRPAutobotti
 
         public int CreateViaggio(int IdVersione, string data, double lun, double tempo, int IdM, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.createViaggioSolSacile(" + IdVersione.ToString() + ",'" + data + "'," + lun.ToString() + "," +
+            string p = "{call Matlab.BIS.createViaggioSolSacile(" + IdVersione.ToString() + ",'" + data + "'," + lun.ToString() + "," +
                 tempo.ToString() + "," + IdM.ToString() + ")}";
 
             SqlCommand comm = new SqlCommand(p, conn);

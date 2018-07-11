@@ -23,7 +23,7 @@ namespace IRPAutobotti
 
         public PrendereValoriSogliaVariabiliStruct PrendereValoriSogliaVariabili(int Id, SqlConnection conn)
         {
-            string p = "{call TIP.[BIS].[getSettingVariabiliById](" + Id + ")}";
+            string p = "{call Matlab.[BIS].[getSettingVariabiliById](" + Id + ")}";
             SqlCommand comm = new SqlCommand(p, conn);
             comm.ExecuteNonQuery();
             var tables = new DataTable();

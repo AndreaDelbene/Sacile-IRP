@@ -32,7 +32,7 @@ namespace IRPAutobotti
             // connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS._FRA_GetTabDistance";
+            comm.CommandText = "Matlab.BIS._FRA_GetTabDistance";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_base", baseCarico);
             comm.Parameters.AddWithValue("@data", data);

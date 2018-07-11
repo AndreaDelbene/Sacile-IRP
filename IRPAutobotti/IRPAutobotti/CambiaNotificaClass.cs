@@ -11,7 +11,7 @@ namespace IRPAutobotti
         public void CambiaNotifica(int IdRunner, int IdVersione, SqlConnection conn)
         {
             //strcat
-            string p = "{call TIP.BIS.changeNotification(" + IdRunner.ToString() + "," +
+            string p = "{call Matlab.BIS.changeNotification(" + IdRunner.ToString() + "," +
                 IdVersione.ToString() + ")}";
             //connection
             SqlCommand comm = new SqlCommand(p,conn);

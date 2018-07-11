@@ -30,7 +30,7 @@ namespace IRPAutobotti
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS.getOrdiniGiornalieriPerSacile";
+            comm.CommandText = "Matlab.BIS.getOrdiniGiornalieriPerSacile";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@data", data);
             comm.Parameters.AddWithValue("@base", baseCarico);

@@ -44,7 +44,7 @@ namespace IRPAutobotti
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS.getSettingByDataBase";
+            comm.CommandText = "Matlab.BIS.getSettingByDataBase";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_base", baseCarico);
             comm.Connection = conn;

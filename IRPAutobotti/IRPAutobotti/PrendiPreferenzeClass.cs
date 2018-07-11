@@ -26,7 +26,7 @@ namespace IRPAutobotti
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;
-            comm.CommandText = "BIS.getPreferenzePuntiVendita";
+            comm.CommandText = "Matlab.BIS.getPreferenzePuntiVendita";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@base", baseCarico);
             comm.Connection = conn;

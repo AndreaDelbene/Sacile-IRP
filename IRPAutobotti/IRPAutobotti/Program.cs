@@ -12,8 +12,8 @@ namespace IRPAutobotti
         static void Main(string[] args)
         {
             int attivo = 1;
-            int baseCarico = 17;
-            String data = "2018-04-11";
+            int baseCarico = 9;
+            String data = "2018-01-15";
             String formatOut = "mm-dd-yyyy";
 
             //Carico i settings dal database
@@ -143,7 +143,10 @@ namespace IRPAutobotti
                 OrdinamentoPVStruct ordinamentoPV = ordinamentoPVClass.OrdinamentoPV(priorita.od_dep_media, ordiniStruct.pv, ordiniMenoMille.ordini, priorita.Valore, distanze.od_pv_pv, n_OrdiniOriginali, distanze.od_dep_pv, distanze.od_pv_dep, ordiniStruct.ordinipiumeno, prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
 
                 // ALGORITMO
-                conn = "";
+                conn.ConnectionString =
+                    "Server=localhost\\SQLEXPRESS;" +
+                    "Database=Matlab;" +
+                    "Integrated Security=True";
                 // [MioOrdineViaggio, targheViaggi, IdM, targa, n_viaggio, scartato, sequenza, giacenza_stored, giacenzapeso, giacenzapeso_stored, viaggio_temp, lun, da_servire, tempo_temp, tempo, viaggio, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord]
                 CalcoloViaggiClass calcoloViaggiClass = new CalcoloViaggiClass();
                 Object[] calcoloViaggi = calcoloViaggiClass.CalcoloViaggi((int[])disponibilitaMezzi[0], targaOriginale, (double[])distanze[3], n_OrdiniOriginali, (double[])ordinamentoPV[2], baseCarico, (double[])ordinamentoPV[7], (double[])settings[7], (double[])settings[8], (double[])settings[9], (double[])ordinamentoPV[9], (double[])ordinamentoPV[5], (double[])ordinamentoPV[6], (double[])ordinamentoPV[4], (double[])settings[10], (double[])settings[11], (double[])ordinamentoPV[3], (double[])ordinamentoPV[1], (double[])ordinamentoPV[10], (double[])ordinamentoPV[12], (double[])ordinamentoPV[11], (double[])ordinamentoPV[13], (double[])ordinamentoPV[14], (double[])ordinamentoPV[15], (double[])ordinamentoPV[8], (double[])ordinamentoPV[0], (double[])settings[0], (double[])settings[13], (double[])ordinamentoMezzi[1], (double[])ordinamentoMezzi[0], (double[])settings[2], (double[])settings[3], (double[])settings[5], (double[])settings[1], (double[])settings[12], MENOMILLE[t], conn);
@@ -151,7 +154,10 @@ namespace IRPAutobotti
 
                 // Inserisci nel db
                 // TargheTempo = TEMPO_MAX * ones(length(IdM), 1);
-                conn = "";
+                conn.ConnectionString =
+                    "Server=localhost\\SQLEXPRESS;" +
+                    "Database=Matlab;" +
+                    "Integrated Security=True";
                 // [IdRunner] = CreateRunner('sacile', baseCarico, data, conn);
                 CreateVersionClass createVersionClass = new CreateVersionClass();
                 int IdVersione = createVersionClass.CreateVersion(baseCarico, "sacile", data, ((int[])idSettings[0])[t], IdRunner, conn);
@@ -161,7 +167,10 @@ namespace IRPAutobotti
                 int n_viaggio = (int)calcoloViaggi[4];
                 while (ii <= n_viaggio)
                 {
-                    conn = "";
+                    conn.ConnectionString =
+                    "Server=localhost\\SQLEXPRESS;" +
+                    "Database=Matlab;" +
+                    "Integrated Security=True";
                     double[] capton = (double[])ordinamentoMezzi[0];
                     int[] targheViaggi = (int[])calcoloViaggi[1];
 
