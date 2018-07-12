@@ -19,7 +19,7 @@ namespace IRPAutobotti
             {
                 for(int j=0;j<n;j++)
                 {
-                    Pkp[j, x[k]] = 0;
+                    Pkp[j, (int)x[k]] = 0;
                 }
 
                 for(int i=0;i<n;i++)
@@ -45,7 +45,7 @@ namespace IRPAutobotti
                 while (r > cc)
                 {
                     c++;
-                    cc = cc + Pk[x[k], c];
+                    cc = cc + Pk[(int)x[k], c];
                 }
                 x[k + 1] = c;
                 Pk = Pkp;

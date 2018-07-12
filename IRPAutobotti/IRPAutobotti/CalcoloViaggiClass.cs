@@ -731,7 +731,7 @@ namespace IRPAutobotti
 
                             Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
                                 Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
-                            int g = 0;
+                            g = 0;
                             ScompartaturaClass sc = new ScompartaturaClass();
 
                             while (sc.Scompartatura(IdM[(int)TargheViaggi[n_viaggio]], Quantita[n_viaggio], MENOMILLE, conn) != 1 && g < viaggio_temp.Count)
@@ -1118,7 +1118,7 @@ namespace IRPAutobotti
 
                         Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
                             Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
-                        int g = 0;
+                        g = 0;
                         ScompartaturaClass sc = new ScompartaturaClass();
 
                         while (sc.Scompartatura(1032, Quantita[n_viaggio], MENOMILLE, conn) != 1 && g < viaggio_temp.Count)

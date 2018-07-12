@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
@@ -11,9 +7,18 @@ namespace IRPAutobotti
     {
         public void RiempiViaggio(int IdViaggio, int Pv, int Ordinale, string Kl, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.RiempiViaggioSolZero(" + IdViaggio + "," + "Pv" + "," + Ordinale + "," + Kl + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+            SqlCommand comm = new SqlCommand();
+            comm.CommandText = "Matlab.BIS.RiempiViaggioSolZero";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@id_viaggio_pv", IdViaggio);
+            comm.Parameters.AddWithValue("@item", Pv);
+            comm.Parameters.AddWithValue("@ordSosta", Ordinale);
+            comm.Parameters.AddWithValue("@stringone", Kl);
+            comm.Connection = conn;
+
+            conn.Open();
+
+            comm.ExecuteReader();
         }
     }
 }

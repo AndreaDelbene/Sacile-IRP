@@ -1,20 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
     class ScompartaturaClass
     {
-        public int Scompartatura(int IdM, int Quantita, int MENOMILLE, SqlConnection conn)
+        public int Scompartatura(int IdM, string Quantita, double MENOMILLE, SqlConnection conn)
         {
-            string p = "{call TIP.BIS.checkScompartiMezzo(" + IdM + "," + Quantita + "," + 0 + "," + MENOMILLE + "," + 0 + ")}";
-            SqlCommand comm = new SqlCommand(p, conn);
-            comm.ExecuteNonQuery();
+            SqlCommand comm = new SqlCommand();
+            comm.CommandText = "Matlab.BIS.checkScompartiMezzo";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@idMezzo", IdM);
+            comm.Parameters.AddWithValue("@stringaProdotti", Quantita);
+            comm.Parameters.AddWithValue("@consentiVuoti", 0);
+            comm.Parameters.AddWithValue("@sogliaMenoMille", MENOMILLE);
+            comm.Parameters.AddWithValue("@completo", 0);
+            comm.Connection = conn;
 
+            conn.Open();
+
+            SqlDataReader reader = comm.ExecuteReader();
+
+
+            string X = reader["Data"].ToString();
+            int x;
+            try
+            {
+                x = X.Length;
+            }
+            catch
+            {
+                x = -1;
+            }
+            return x;
         }
     }
 }

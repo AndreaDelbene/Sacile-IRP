@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IRPAutobotti
@@ -18,7 +19,7 @@ namespace IRPAutobotti
 
         public TspStruct tsp(int N, double rho, double alpha, double[,] A, int traj)
         {
-            int[] I = Enumerable.Range(0, S.Length).ToArray();  // Indexes of S
+            int[] I = Enumerable.Range(0, A.Length).ToArray();  // Indexes of S
 
             //GetLength(0) ritorna il numero di colonne mentre con 1, il numero di righe
             int n = A.GetLength(0);
@@ -47,27 +48,31 @@ namespace IRPAutobotti
             }
 
             int count = 1;
-            int[][] X = new int[N][];
-            int[][] Y = new int[N][];
+            List<int[]> X = new List<int[]>();
+            List<int[]> Y = new List<int[]>();
             int[] S = new int[N];
+            int g = 0;
+            gtsp0Class gtsp0 = new gtsp0Class();
+            gtsp1Class gtsp1 = new gtsp1Class();
+            stspClass stsp = new stspClass();
             while (Max(AbsOfDifference(P,Pold)) > tol)
             {
                 for(int i = 0; i < N; i++)
                 {
                     if(traj == 0)
                     {
-                        X[i] = gtsp0Class().gtsp0(P);
+                        X[i] = gtsp0.gtsp0(P);
                     }
                     else
                     {
-                        X[i] = gtsp0Class().gtsp1(P);
+                        X[i] = gtsp1.gtsp1(P);
                     }
 
 
                     int[] x = new int[n];
                     if(traj == 0)
                     {
-                        S[i] = stspClass().stsp(X[i], A);
+                        S[i] = stsp.stsp(X[i], A);
                     }
                     else
                     {
@@ -79,12 +84,12 @@ namespace IRPAutobotti
                             x[ki] = zi;
                         }
                         Y[i] = x;
-                        S[i] = stspClass().stsp();
+                        S[i] = stsp.stsp(x,A);
                     }
                 }
 
                 Array.Sort(S, I);
-                int g = (int)Math.Floor(rho * N);
+                g = (int)Math.Floor(rho * N);
                 double[,] w = new double[n, n];
                 if (traj == 0)
                 {
@@ -146,7 +151,7 @@ namespace IRPAutobotti
                     break;
                 count++;
             }
-            int[] pi = new int[X.GetLength(0)];
+            int[] pi = new int[X.Capacity];
             if(traj == 0)
             {
                 pi = X[I[1]];
@@ -171,7 +176,7 @@ namespace IRPAutobotti
             return result;
         }
 
-        private int search(int[][] X, int I, int i)
+        private int search(List<int[]> X, int I, int i)
         {
             for(int j = 0; j < X[I].Length; j++)
             {
