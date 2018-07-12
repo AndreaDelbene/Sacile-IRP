@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -21,11 +20,7 @@ namespace IRPAutobotti
         }
 
         public IdSettingsVariabiliStruct IdSettingsVariabili(int baseCarico, SqlConnection conn)
-        {
-            /*setdbprefs('DataReturnFormat', 'table');
-            setdbprefs('NullNumberRead', 'NaN');
-            setdbprefs('NullStringRead', 'null');*/
-
+        { 
             //connection
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;

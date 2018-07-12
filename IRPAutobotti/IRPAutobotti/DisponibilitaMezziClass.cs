@@ -8,7 +8,7 @@ namespace IRPAutobotti
     public struct DisponibilitaMezziStruct
     {
         public int[] IdM;
-        public int[,] scomparti;
+        public double[,] scomparti;
         public double[] captontemp;
         public string[] targatemp1;
         public string[] targatemp2;
@@ -48,9 +48,7 @@ namespace IRPAutobotti
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma
             double[] captonTemp = new double[turno.Length];
-            int[] IdM = (from IDataRecord r in reader
-                         select (int)r["Id"]
-                            ).ToArray();
+            int[] IdM = (from IDataRecord r in reader select (int)r["Id"]).ToArray();
             // 17 è la colonna finale degli scomparti anteriori
             //prendo le colonne da 8 a 18 per gli Anteriori, da 20 a 30 per i Posteriori
             for (int i=0;i<10;i++)
@@ -60,7 +58,7 @@ namespace IRPAutobotti
                 scompartiAnt.Add(scompartiAntTemp);
                 scompartiPost.Add(scompartiPostTemp);
             }
-            int[,] scomparti = new int[scompartiPost.Count, scompartiPost[0].Length];
+            double[,] scomparti = new double[scompartiPost.Count, scompartiPost[0].Length];
             // sommo quindi membro a membro ogni elemento e lo metto dentro ad una matrice di interi
             for(int i=0;i<scompartiAnt.Count;i++)
             {
@@ -77,8 +75,6 @@ namespace IRPAutobotti
                 //somma membro a membro
                 captonTemp[i] = captonAnt[i] + captonPost[i];
             }
-            //copio nella struct
-            dmStruct.captontemp = captonTemp;
             //stesso ragionamento per le targhe
             string[] targaAnt = (from IDataRecord r in reader select (string)r["targaAnt"]).ToArray();
             string[] targaPost = (from IDataRecord r in reader select (string)r["targaPost"]).ToArray();
@@ -91,6 +87,8 @@ namespace IRPAutobotti
                 targaTemp2[i] = "''" + targaAnt[i] + "/" + targaPost[i] + "''";
             }
             //e le copio nella struct da ritornare
+            dmStruct.IdM = IdM;
+            dmStruct.captontemp = captonTemp;
             dmStruct.targatemp1 = targaTemp1;
             dmStruct.targatemp2 = targaTemp2;
             dmStruct.scomparti = scomparti;

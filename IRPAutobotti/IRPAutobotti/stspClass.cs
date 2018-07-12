@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IRPAutobotti
 {
     class stspClass
@@ -12,9 +7,9 @@ namespace IRPAutobotti
         {
             // Do nothing
         }
-        public int stsp(int[] x, double[,] A)
+        public double stsp(int[] x, double[,] A)
         {
-            int s = 0;
+            double s = 0;
             int size = A.Length;
             for(int i = 0; i < size - 1; i++)
             {

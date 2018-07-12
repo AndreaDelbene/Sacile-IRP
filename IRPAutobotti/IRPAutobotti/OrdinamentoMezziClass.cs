@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
 
     public struct OrdinamentoMezziStruct
     {
-        public double[,] capton;
-        public double[,] capmax;
-        public int[,] targa;
+        public double[] capton;
+        public double[] capmax;
+        public double[] targa;
     }
     class OrdinamentoMezziClass
     {
         public OrdinamentoMezziStruct omStruct;
+
         public OrdinamentoMezziClass()
         {
             omStruct = new OrdinamentoMezziStruct();
         }
 
-        public OrdinamentoMezziStruct OrdinamentoMezzi(double[] captontemp, double[] capmaxtemp, int[] targatemp)
+        public OrdinamentoMezziStruct OrdinamentoMezzi(double[] captontemp, double[] capmaxtemp, double[] targatemp)
         {
             int[] indexes = Enumerable.Range(0, captontemp.Length).ToArray();//creo un array di indici ordinati
             Array.Sort(captontemp, indexes);//ordino captontemp e allo stesso tempo ordino l'array di indici allo stesso modo
@@ -34,31 +32,28 @@ namespace IRPAutobotti
             //ottengo l'ordine decrescente invertendo gli array
             double[] captontempDecr = captontemp;
             double[] capmaxtempDecr = capmaxtemp;
-            int[] targatempDecr = targatemp;
+            double[] targatempDecr = targatemp;
             Array.Reverse(captontempDecr);
             Array.Reverse(capmaxtempDecr);
             Array.Reverse(targatempDecr);
 
-            double[,] capton = new double[captontemp.Length,3];
-            double[,] capmax = new double[captontemp.Length, 3];
-            int[,] targa = new int[captontemp.Length, 3];
+            double[] capton = new double[captontempDecr.Length + captontemp.Length + captontempDecr.Length];
+            double[] capmax = new double[capmaxtempDecr.Length + capmaxtemp.Length + capmaxtempDecr.Length];
+            double[] targa = new double[targatempDecr.Length + targatemp.Length + targatempDecr.Length];
 
 
             // riempo le matrici capton, capmax e targa con i rispettivi vettori crescenti e decrescenti
-            for (int i = 0; i < captontemp.Length; i++)
-            {
-                capton[i, 0] = captontempDecr[i];
-                capton[i, 1] = captontemp[i];
-                capton[i, 2] = captontempDecr[i];
+            captontempDecr.CopyTo(capton, 0);
+            captontemp.CopyTo(capton, captontempDecr.Length);
+            captontempDecr.CopyTo(capton, captontempDecr.Length + captontemp.Length);
 
-                capmax[i, 0] = capmaxtempDecr[i];
-                capmax[i, 1] = capmaxtemp[i];
-                capmax[i, 2] = capmaxtempDecr[i];
+            capmaxtempDecr.CopyTo(capmax, 0);
+            capmaxtemp.CopyTo(capmax, capmaxtempDecr.Length);
+            capmaxtempDecr.CopyTo(capmax, capmaxtempDecr.Length + capmaxtemp.Length);
 
-                targa[i, 0] = targatempDecr[i];
-                targa[i, 1] = targatemp[i];
-                targa[i, 2] = targatempDecr[i];
-            }
+            targatempDecr.CopyTo(targa, 0);
+            targatemp.CopyTo(targa, targatempDecr.Length);
+            targatempDecr.CopyTo(targa, targatempDecr.Length + targatemp.Length);
 
             omStruct.capton = capton;
             omStruct.capmax = capmax;

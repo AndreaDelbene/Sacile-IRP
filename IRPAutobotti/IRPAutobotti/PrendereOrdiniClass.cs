@@ -7,16 +7,16 @@ namespace IRPAutobotti
 
     public struct PrendereOrdiniStruct
     {
-        public int[] MioOrdine;
-        public int[] pv;
-        public int[] ordini;
-        public int[] ordiniD;
-        public int[] ordiniBD;
-        public int[] ordiniB95;
-        public int[] ordiniBS;
-        public int[] ordiniAlpino;
-        public int[] ordiniBluAlpino;
-        public int[] ordinipiumeno;
+        public double[] MioOrdine;
+        public double[] pv;
+        public double[] ordini;
+        public double[] ordiniD;
+        public double[] ordiniBD;
+        public double[] ordiniB95;
+        public double[] ordiniBS;
+        public double[] ordiniAlpino;
+        public double[] ordiniBluAlpino;
+        public double[] ordinipiumeno;
     }
     class PrendereOrdiniClass
     {
@@ -41,16 +41,16 @@ namespace IRPAutobotti
 
             reader = comm.ExecuteReader();
 
-            poStruct.pv = (from IDataRecord r in reader select (int)r["codicePv"]).ToArray();
-            poStruct.ordini = (from IDataRecord r in reader select (int)r["QMille"]).ToArray();
-            poStruct.ordiniD = (from IDataRecord r in reader select (int)r["D"]).ToArray();
-            poStruct.ordiniB95 = (from IDataRecord r in reader select (int)r["B95"]).ToArray();
-            poStruct.ordiniBS = (from IDataRecord r in reader select (int)r["BS"]).ToArray();
-            poStruct.ordiniBD = (from IDataRecord r in reader select (int)r["BD"]).ToArray();
-            poStruct.ordiniAlpino = (from IDataRecord r in reader select (int)r["GA"]).ToArray();
-            poStruct.ordiniBluAlpino = (from IDataRecord r in reader select (int)r["GBA"]).ToArray();
-            poStruct.ordinipiumeno = (from IDataRecord r in reader select (int)r["modalit"]).ToArray();
-            poStruct.MioOrdine= (from IDataRecord r in reader select (int)r["IdMioOrdine"]).ToArray();
+            poStruct.pv = (from IDataRecord r in reader select (double)r["codicePv"]).ToArray();
+            poStruct.ordini = (from IDataRecord r in reader select (double)r["QMille"]).ToArray();
+            poStruct.ordiniD = (from IDataRecord r in reader select (double)r["D"]).ToArray();
+            poStruct.ordiniB95 = (from IDataRecord r in reader select (double)r["B95"]).ToArray();
+            poStruct.ordiniBS = (from IDataRecord r in reader select (double)r["BS"]).ToArray();
+            poStruct.ordiniBD = (from IDataRecord r in reader select (double)r["BD"]).ToArray();
+            poStruct.ordiniAlpino = (from IDataRecord r in reader select (double)r["GA"]).ToArray();
+            poStruct.ordiniBluAlpino = (from IDataRecord r in reader select (double)r["GBA"]).ToArray();
+            poStruct.ordinipiumeno = (from IDataRecord r in reader select (double)r["modalit"]).ToArray();
+            poStruct.MioOrdine= (from IDataRecord r in reader select (double)r["IdMioOrdine"]).ToArray();
 
 
             return poStruct;

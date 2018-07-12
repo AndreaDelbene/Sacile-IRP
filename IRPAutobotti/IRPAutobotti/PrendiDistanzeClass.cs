@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
@@ -26,7 +24,7 @@ namespace IRPAutobotti
             pdStruct = new PrendiDistanzeStruct();
         }
 
-        public PrendiDistanzeStruct PrendiDistanze(int baseCarico, string data, int n_ordini, int[] pv, DataTable preferenze, SqlConnection conn)
+        public PrendiDistanzeStruct PrendiDistanze(int baseCarico, string data, int n_ordini, double[] pv, DataTable preferenze, SqlConnection conn)
         {
 
             // connection

@@ -9,7 +9,7 @@ namespace IRPAutobotti
         {
         }
 
-        public int CreateViaggioNoMezzo(int IdVersione, string data, double lun, double tempo, int IdM, SqlConnection conn)
+        public int CreateViaggioNoMezzo(int IdVersione, string data, double lun, short tempo, int IdM, SqlConnection conn)
         {
             SqlCommand comm = new SqlCommand();
             SqlDataReader reader;

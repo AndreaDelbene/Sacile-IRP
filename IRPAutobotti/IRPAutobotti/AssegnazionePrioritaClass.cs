@@ -18,7 +18,7 @@ namespace IRPAutobotti
         }
 
         public AssegnazionePrioritaStruct AssegnazionePriorita(double[] od_dep_pv, double[] od_pv_dep, double[,] od_pv_pv, int n_ordini, double[] peso, 
-            double maxcap, int[] ordini, int esponente, double ELLISSE, double beta, double[,] preferenza_pv_pv, int DISTANZA_MAX_PVPV)
+            double maxcap, double[] ordini, int esponente, double ELLISSE, double beta, double[,] preferenza_pv_pv, int DISTANZA_MAX_PVPV)
         {
             double[,] p = new double[n_ordini,n_ordini];
             double[,] Valore = new double[n_ordini,n_ordini];

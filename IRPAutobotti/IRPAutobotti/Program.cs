@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
@@ -35,7 +33,7 @@ namespace IRPAutobotti
             DisponibilitaMezziClass disponibilitaMezziClass = new DisponibilitaMezziClass();
             // [IdM,scomparti,captontemp,targatemp1,temp2]
             DisponibilitaMezziStruct disponibilitaMezzi = disponibilitaMezziClass.DisponibilitaMezzi(attivo, data, baseCarico, conn);
-            int[,] scomparti = disponibilitaMezzi.scomparti;
+            double[,] scomparti = disponibilitaMezzi.scomparti;
             double[] capmaxtemp = new double[scomparti.Length];
             for (int i = 0; i < scomparti.GetLength(1); i++)
             {
@@ -49,7 +47,7 @@ namespace IRPAutobotti
             //ottengo il numero dei mezzi
             int nmezzi = capmaxtemp.Length;
 
-            int[] targatemp = new int[nmezzi];
+            double[] targatemp = new double[nmezzi];
             for (int i = 0; i < nmezzi; i++)
                 targatemp[i] = i;
 
@@ -73,7 +71,7 @@ namespace IRPAutobotti
             // quantita massima per ogni PV, per il rate di scarico (successivo)
             // numero di vettori che compongono la matrice: 6
             // inserisce ogni vettore da ordiniDO a ordiniBluAlpino nella matrice
-            List<int[]> prodottiArray = new List<int[]>();
+            List<double[]> prodottiArray = new List<double[]>();
             prodottiArray.Add(ordiniStruct.ordiniD);
             prodottiArray.Add(ordiniStruct.ordiniBD);
             prodottiArray.Add(ordiniStruct.ordiniB95);
@@ -82,7 +80,7 @@ namespace IRPAutobotti
             prodottiArray.Add(ordiniStruct.ordiniBluAlpino);
             prodottiArray.ToArray();
 
-            int[] prodottomax = new int[n_ordini];
+            double[] prodottomax = new double[n_ordini];
             for(int i = 0; i < n_ordini; i++)
             {
                 prodottomax[i] = prodottiArray[i].Max();
@@ -174,7 +172,7 @@ namespace IRPAutobotti
                     double[] capton = (double[])ordinamentoMezzi[0];
                     int[] targheViaggi = (int[])calcoloViaggi[1];
 
-                    double[] tempo = (double[])calcoloViaggi[14];
+                    short[] tempo = (short[])calcoloViaggi[14];
                     double[] lun = (double[])calcoloViaggi[11];
                     int[] IdM = (int[])calcoloViaggi[2];
                     if (ii <= capton.Length && targheViaggi[ii] != -1)

@@ -9,26 +9,27 @@ namespace IRPAutobotti
     public struct CalcoloViaggiStruct
     {
         public List<List<double>> MioOrdineViaggio;
-        public int[] TargheViaggi;
+        public double[] TargheViaggi;
         public int[] IdM;
-        public int[] targa;
-        public int n_viaggio;
+        public double[] targa;
+        public double n_viaggio;
+        public double scartato;
         public List<List<double>> sequenza;
         public double giacenza;
         public double giacenzapeso;
         public List<double> giacenzapeso_stored;
         public List<double> viaggio_temp;
         public List<double> lun;
-        public int[] da_servire;
+        public double[] da_servire;
         public Int16 tempo_temp;
         public List<short> tempo;
         public List<List<double>> viaggio;
-        public int[] ordiniD_ord;
-        public int[] ordiniBD_ord;
-        public int[] ordiniB95_ord;
-        public int[] ordiniBS_ord;
-        public int[] ordiniALpino_ord;
-        public int[] ordiniBluAlpino_ord;
+        public double[] ordiniD_ord;
+        public double[] ordiniBD_ord;
+        public double[] ordiniB95_ord;
+        public double[] ordiniBS_ord;
+        public double[] ordiniALpino_ord;
+        public double[] ordiniBluAlpino_ord;
     }
 
     class CalcoloViaggiClass
@@ -40,30 +41,30 @@ namespace IRPAutobotti
             cvStruct = new CalcoloViaggiStruct();
         }
 
-        public CalcoloViaggiStruct CalcoloViaggi(int[] IdM, int[] targa, DataTable od_pv_pv_completa, int n_ordini, double[] pv_ord, int baseCarico, double[] ordinipeso_ord,
-            int CARICA, int SCARICA, double SCARICALITRO, double[] max_product_ord, double[] od_dep_pv_ord, double[] od_pv_dep_ord, double[,] od_pv_pv_ord, double MINxKM,
-            int TEMPO_MAX, double[,] valore_ord, int[] ordini_ord, int[] ordiniD_ord, int[] ordiniB95_ord, int[] ordiniBD_ord, int[] ordiniBS_ord,
-            int[] ordiniAlpino_ord, int[] ordiniBluAlpino_ord, int[] ordini_piumeno_ord, double[] MioOrdine_ord, int GIACENZA_MIN, int KM_MIN, double[] capmax, double[] capton,
-            double dens_D, double dens_B95, double dens_BD, double dens_BS, int MAXDROP, double MENOMILLE, SqlConnection conn)
+        public CalcoloViaggiStruct CalcoloViaggi(int[] IdM, double[] targa, DataTable od_pv_pv_completa, int n_ordini, double[] pv_ord, int baseCarico, double[] ordinipeso_ord,
+            double CARICA, double SCARICA, double SCARICALITRO, double[] max_product_ord, double[] od_dep_pv_ord, double[] od_pv_dep_ord, double[,] od_pv_pv_ord, double MINxKM,
+            double TEMPO_MAX, double[,] valore_ord, double[] ordini_ord, double[] ordiniD_ord, double[] ordiniB95_ord, double[] ordiniBD_ord, double[] ordiniBS_ord,
+            double[] ordiniAlpino_ord, double[] ordiniBluAlpino_ord, double[] ordini_piumeno_ord, double[] MioOrdine_ord, double GIACENZA_MIN, double KM_MIN, double[] capmax, double[] capton,
+            double dens_D, double dens_B95, double dens_BD, double dens_BS, double MAXDROP, double MENOMILLE, SqlConnection conn)
         {
             int nTarghe = IdM.Length;
-            int[] da_servire = new int[n_ordini];
+            double[] da_servire = new double[n_ordini];
             for(int i=0;i<n_ordini;i++)
             {
                 da_servire[i] = 1;
             }
 
-            int[] TargheViaggi = new int[capton.Length];
+            double[] TargheViaggi = new double[capton.Length];
             for (int i = 0; i < capton.Length; i++)
             {
                 TargheViaggi[i] = -1;
             }
             int n_viaggio = 0;
-            int scartato = 0;
-            int c= TEMPO_MAX - 10;
+            double scartato = 0;
+            double c= TEMPO_MAX - 10;
             Int16[] TargheTempo = new Int16[nTarghe];
             Int16[] ContaTarghe = new Int16[nTarghe];
-            int[] Targhe = new int[nTarghe];
+            double[] Targhe = new double[nTarghe];
             for (int i=0;i<nTarghe;i++)
             {
                 TargheTempo[i] = Convert.ToInt16(c);
@@ -74,14 +75,14 @@ namespace IRPAutobotti
             Int16 tempo_temp=0;
             List<double> lun = new List<double>();
             List<int> j_temp = new List<int>();
-            List<int> giacenza_stored = new List<int>();
+            List<double> giacenza_stored = new List<double>();
             List<double> giacenzapeso_stored = new List<double>();
             List<string> Quantita = new List<string>();
             List<Int16> tempo = new List<short>();
             List<List<double>> viaggio = new List<List<double>>();
             List<List<double>> MioOrdineViaggio = new List<List<double>>();
             List<List<double>> sequenza = new List<List<double>>();
-            int giacenza = 0;
+            double giacenza = 0;
             double giacenzapeso = 0;
 
             for (int i=0;i<n_ordini;i++)
@@ -117,7 +118,7 @@ namespace IRPAutobotti
                     tempo_temp = Convert.ToInt16(temposcarica + tempoguida);
                     //----------------------------------------------
                     da_servire[i] = 0;
-                    int[] maschera = da_servire;
+                    double[] maschera = da_servire;
                     fineviaggio = 0;
                     //in j ho il migliore che si accoppia e in M il suo valoreù
                     double[] temp = new double[maschera.Length];
@@ -391,7 +392,7 @@ namespace IRPAutobotti
                                 g = 0;
                                 ScompartaturaClass sc = new ScompartaturaClass();
 
-                                while (sc.Scompartatura(IdM[TargheViaggi[n_viaggio]],Quantita[n_viaggio],MENOMILLE,conn)!=1 && g<viaggio_temp.Count)
+                                while (sc.Scompartatura(IdM[(int)TargheViaggi[n_viaggio]],Quantita[n_viaggio],MENOMILLE,conn)!=1 && g<viaggio_temp.Count)
                                 {
                                     t = 0;
                                     if (g == 0)
@@ -733,7 +734,7 @@ namespace IRPAutobotti
                             int g = 0;
                             ScompartaturaClass sc = new ScompartaturaClass();
 
-                            while (sc.Scompartatura(IdM[TargheViaggi[n_viaggio]], Quantita[n_viaggio], MENOMILLE, conn) != 1 && g < viaggio_temp.Count)
+                            while (sc.Scompartatura(IdM[(int)TargheViaggi[n_viaggio]], Quantita[n_viaggio], MENOMILLE, conn) != 1 && g < viaggio_temp.Count)
                             {
                                 t = 0;
                                 if (g == 0)
@@ -1208,6 +1209,7 @@ namespace IRPAutobotti
             cvStruct.IdM = IdM;
             cvStruct.targa = targa;
             cvStruct.n_viaggio = n_viaggio;
+            cvStruct.scartato = scartato;
             cvStruct.sequenza = sequenza;
             cvStruct.giacenza = giacenza;
             cvStruct.giacenzapeso = giacenzapeso;

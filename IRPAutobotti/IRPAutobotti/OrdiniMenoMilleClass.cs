@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IRPAutobotti
 {
     public struct OrdiniMenoMilleStruct
     {
-        public int[] ordini;
-        public int[] ordiniD;
-        public int[] ordiniBD;
-        public int[] ordiniB95;
-        public int[] ordiniBS;
-        public int[] ordiniAlpino;
-        public int[] ordiniBluAlpino;
+        public double[] ordini;
+        public double[] ordiniD;
+        public double[] ordiniBD;
+        public double[] ordiniB95;
+        public double[] ordiniBS;
+        public double[] ordiniAlpino;
+        public double[] ordiniBluAlpino;
         public double[] peso;
     }
     class OrdiniMenoMilleClass
@@ -25,7 +20,8 @@ namespace IRPAutobotti
             ommStruct = new OrdiniMenoMilleStruct();
         }
 
-        public OrdiniMenoMilleStruct OrdiniMenoMille(int n_ordini, int MENOMILLE, int[] ordini, int[] ordiniD, int[] ordiniBD, int[] ordiniB95, int[] ordiniBS, int[] ordiniAlpino, int[] ordiniBluAlpino, double dens_D, double dens_BD, double dens_BS, double dens_B95)
+        public OrdiniMenoMilleStruct OrdiniMenoMille(int n_ordini, double MENOMILLE, double[] ordini, double[] ordiniD, double[] ordiniBD, double[] ordiniB95, double[] ordiniBS, double[] ordiniAlpino,
+            double[] ordiniBluAlpino, double dens_D, double dens_BD, double dens_BS, double dens_B95)
         {
             double[] peso = new double[n_ordini];
             for(int i = 0; i < n_ordini; i++)

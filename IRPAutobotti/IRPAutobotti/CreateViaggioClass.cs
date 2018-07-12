@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace IRPAutobotti
 {
@@ -10,7 +9,7 @@ namespace IRPAutobotti
         {
         }
 
-        public int CreateViaggio(int IdVersione, string data, double lun, double tempo, int IdM, SqlConnection conn)
+        public int CreateViaggio(int IdVersione, string data, double lun, short tempo, int IdM, SqlConnection conn)
         {
 
             SqlCommand comm = new SqlCommand();

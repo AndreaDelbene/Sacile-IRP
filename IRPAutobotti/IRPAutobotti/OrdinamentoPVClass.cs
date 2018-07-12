@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRPAutobotti
 {
@@ -36,17 +33,19 @@ namespace IRPAutobotti
             opvStruct = new OrdinamentoPVStruct();
         }
 
-        public OrdinamentoPVStruct OrdinamentoPV(double[] od_dep_media, int[] pv, int[] ordini, double[,] Valore, double[,] od_pv_pv, int n_ordini, double[] od_dep_pv, double[] od_pv_dep, int[] ordinipiumeno, int[] prodottomax, double[] peso, double[] ordiniD, double[] ordiniBD, double[] ordiniB95, double[] ordiniBS, double[] ordiniAlpino, double[] ordiniBluAlpino, int MioOrdine , int ordinati)
+        public OrdinamentoPVStruct OrdinamentoPV(double[] od_dep_media, double[] pv, double[] ordini, double[,] Valore, double[,] od_pv_pv, int n_ordini,
+            double[] od_dep_pv, double[] od_pv_dep, double[] ordinipiumeno, double[] prodottomax, double[] peso, double[] ordiniD, double[] ordiniBD, 
+            double[] ordiniB95, double[] ordiniBS, double[] ordiniAlpino, double[] ordiniBluAlpino, double[] MioOrdine , double[] ordinati)
         {
             int[] indexes = Enumerable.Range(0, pv.Length).ToArray();
 
             Array.Sort(od_dep_media, indexes);
             Array.Reverse(od_dep_media);
             Array.Reverse(indexes);
-            int[] pv_temp = indexes.Select(index => pv[index]).ToArray();
-            int[] ordini_temp = indexes.Select(index => ordini[index]).ToArray();
-            int[] valore_temp = indexes.Select(index => Valore[index]).ToArray();
-            int[] od_pv_pv_temp = indexes.Select(index => od_pv_pv[index]).ToArray();
+            double[] pv_temp = indexes.Select(index => pv[index]).ToArray();
+            double[] ordini_temp = indexes.Select(index => ordini[index]).ToArray();
+            double[] valore_temp = indexes.Select(index => Valore[index]).ToArray();
+            double[] od_pv_pv_temp = indexes.Select(index => od_pv_pv[index]).ToArray();
 
 
             return opvStruct;
