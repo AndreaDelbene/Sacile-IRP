@@ -41,9 +41,7 @@ namespace IRPAutobotti
             List<int[]> scompartiAnt = new List<int[]>();
             List<int[]> scompartiPost = new List<int[]>();
             //capacità tonnellate
-            int[] turno = (from IDataRecord r in reader
-                           select (int)r["Turno"]
-                            ).ToArray();
+            int[] turno = (from IDataRecord r in reader select (int)r["Turno"]).ToArray();
             double[] captonAnt = new double[turno.Length];
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma

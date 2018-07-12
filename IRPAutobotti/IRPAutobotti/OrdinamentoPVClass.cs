@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IRPAutobotti
@@ -19,7 +20,7 @@ namespace IRPAutobotti
         public double[] ordiniD_ord;
         public double[] ordiniBD_ord;
         public double[] ordiniB95_ord;
-        public double[] rdiniBS_ord;
+        public double[] ordiniBS_ord;
         public double[] ordiniAlpino_ord;
         public double[] ordiniBluAlpino_ord;
         public double[] ordinati_ord;
@@ -28,6 +29,7 @@ namespace IRPAutobotti
     class OrdinamentoPVClass
     {
         public OrdinamentoPVStruct opvStruct;
+
         public OrdinamentoPVClass()
         {
             opvStruct = new OrdinamentoPVStruct();
@@ -44,9 +46,34 @@ namespace IRPAutobotti
             Array.Reverse(indexes);
             double[] pv_temp = indexes.Select(index => pv[index]).ToArray();
             double[] ordini_temp = indexes.Select(index => ordini[index]).ToArray();
-            double[] valore_temp = indexes.Select(index => Valore[index]).ToArray();
-            double[] od_pv_pv_temp = indexes.Select(index => od_pv_pv[index]).ToArray();
+            List<List<double>> valore_temp = new List<List<double>>();
+            List<List<double>> od_pv_pv_temp = new List<List<double>>();
 
+            for (int i=0;i<Valore.GetLength(1);i++)
+            {
+                valore_temp[i].Add(indexes.Select(index => Valore[i, index]).ToArray());
+            }
+            for (int i = 0; i < od_pv_pv.GetLength(1); i++)
+            {
+                od_pv_pv_temp[i].Add(indexes.Select(index => od_pv_pv[i, index]).ToArray());
+            }
+
+            opvStruct.MioOrdine_ord =;
+            opvStruct.ordini_ord = ;
+            opvStruct.pv_ord =;
+            opvStruct.valore_ord =;
+            opvStruct.od_pv_pv_ord =;
+            opvStruct.od_dep_pv_ord =;
+            opvStruct.od_pv_dep_ord =;
+            opvStruct.ordinipeso_ord =;
+            opvStruct.ordini_piumeno_ord =;
+            opvStruct.max_product_ord =;
+            opvStruct.ordiniD_ord =;
+            opvStruct.ordiniBD_ord =;
+            opvStruct.ordiniB95_ord =;
+            opvStruct.ordiniAlpino_ord =;
+            opvStruct.ordiniBluAlpino_ord =;
+            opvStruct.ordinati_ord =;
 
             return opvStruct;
         }

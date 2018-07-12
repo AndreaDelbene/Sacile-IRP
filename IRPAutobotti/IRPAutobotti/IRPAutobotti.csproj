@@ -74,6 +74,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RiempiViaggioClass.cs" />
+    <Compile Include="ScompartaturaClass.cs" />
     <Compile Include="stspClass.cs" />
     <Compile Include="tspClass.cs" />
   </ItemGroup>

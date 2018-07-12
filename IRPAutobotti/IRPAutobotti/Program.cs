@@ -16,8 +16,9 @@ namespace IRPAutobotti
 
             //Carico i settings dal database
             SqlConnection conn = new SqlConnection();
+            //"Server=localhost\\SQLEXPRESS;"
             conn.ConnectionString =
-            "Server=localhost\\SQLEXPRESS;" +
+            "Server=LAPTOP-DT8KB2TQ;" +
             "Database=Matlab;" +
             "Integrated Security=True";
 
@@ -125,80 +126,117 @@ namespace IRPAutobotti
                 // [ordini, ordiniD, ordiniBD, ordiniB95, ordiniBS, ordiniAlpino, ordiniBluAlpino, peso]
                 OrdiniMenoMilleClass ordiniMenoMilleClass = new OrdiniMenoMilleClass();
                 double[] MENOMILLE = idSettings.MENOMILLE;
-                OrdiniMenoMilleStruct ordiniMenoMille = ordiniMenoMilleClass.OrdiniMenoMille(n_OrdiniOriginali, (int)MENOMILLE[t], OrdiniOriginali, OrdiniOriginaliD, OrdiniOriginaliBD, OrdiniOriginaliB95, OrdiniOriginaliBS, OrdiniOriginaliAlpino, OrdiniOriginaliBluAlpino, settings.dens_D, settings.dens_BD, settings.dens_BS, settings.dens_B95);
+                OrdiniMenoMilleStruct ordiniMenoMille = ordiniMenoMilleClass.OrdiniMenoMille(n_OrdiniOriginali, MENOMILLE[t], OrdiniOriginali, OrdiniOriginaliD, OrdiniOriginaliBD, OrdiniOriginaliB95, OrdiniOriginaliBS, OrdiniOriginaliAlpino, OrdiniOriginaliBluAlpino, settings.dens_D, 
+                    settings.dens_BD, settings.dens_BS, settings.dens_B95);
 
                 //ASSEGNO PRIORITA'
                 // sommo l'andata e il ritorno di un pv dalla base, e prendo quello che ha valore maggiore
                 // [p, Valore, od_dep_media]
                 AssegnazionePrioritaClass assegnazionePrioritaClass = new AssegnazionePrioritaClass();
-                AssegnazionePrioritaStruct priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
+                AssegnazionePrioritaStruct priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, 
+                    settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
 
                 //ORDINAMENTO DEI PV
                 // ordinamento dal più distante
                 // ordino in maniera decrescente per il valore della prima colonna
                 // [MioOrdine_ord, ordini_ord, pv_ord, valore_ord, od_pv_pv_ord, od_dep_pv_ord, od_pv_dep_ord, ordinipeso_ord, ordini_piumeno_ord, max_product_ord, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord, ordinati_ord]
                 OrdinamentoPVClass ordinamentoPVClass = new OrdinamentoPVClass();
-                OrdinamentoPVStruct ordinamentoPV = ordinamentoPVClass.OrdinamentoPV(priorita.od_dep_media, ordiniStruct.pv, ordiniMenoMille.ordini, priorita.Valore, distanze.od_pv_pv, n_OrdiniOriginali, distanze.od_dep_pv, distanze.od_pv_dep, ordiniStruct.ordinipiumeno, prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
+                OrdinamentoPVStruct ordinamentoPV = ordinamentoPVClass.OrdinamentoPV(priorita.od_dep_media, ordiniStruct.pv, ordiniMenoMille.ordini, priorita.Valore, distanze.od_pv_pv, n_OrdiniOriginali, distanze.od_dep_pv, distanze.od_pv_dep, ordiniStruct.ordinipiumeno,
+                    prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
 
                 // ALGORITMO
                 conn.ConnectionString =
-                    "Server=localhost\\SQLEXPRESS;" +
+                    "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
                     "Integrated Security=True";
                 // [MioOrdineViaggio, targheViaggi, IdM, targa, n_viaggio, scartato, sequenza, giacenza_stored, giacenzapeso, giacenzapeso_stored, viaggio_temp, lun, da_servire, tempo_temp, tempo, viaggio, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord]
                 CalcoloViaggiClass calcoloViaggiClass = new CalcoloViaggiClass();
-                Object[] calcoloViaggi = calcoloViaggiClass.CalcoloViaggi((int[])disponibilitaMezzi[0], targaOriginale, (double[])distanze[3], n_OrdiniOriginali, (double[])ordinamentoPV[2], baseCarico, (double[])ordinamentoPV[7], (double[])settings[7], (double[])settings[8], (double[])settings[9], (double[])ordinamentoPV[9], (double[])ordinamentoPV[5], (double[])ordinamentoPV[6], (double[])ordinamentoPV[4], (double[])settings[10], (double[])settings[11], (double[])ordinamentoPV[3], (double[])ordinamentoPV[1], (double[])ordinamentoPV[10], (double[])ordinamentoPV[12], (double[])ordinamentoPV[11], (double[])ordinamentoPV[13], (double[])ordinamentoPV[14], (double[])ordinamentoPV[15], (double[])ordinamentoPV[8], (double[])ordinamentoPV[0], (double[])settings[0], (double[])settings[13], (double[])ordinamentoMezzi[1], (double[])ordinamentoMezzi[0], (double[])settings[2], (double[])settings[3], (double[])settings[5], (double[])settings[1], (double[])settings[12], MENOMILLE[t], conn);
+                CalcoloViaggiStruct calcoloViaggi = calcoloViaggiClass.CalcoloViaggi(disponibilitaMezzi.IdM, targaOriginale, distanze.od_pv_pv_completa, n_OrdiniOriginali, ordinamentoPV.pv_ord, baseCarico, ordinamentoPV.ordinipeso_ord, settings.CARICA, settings.SCARICA, settings.SCARICALITRO, ordinamentoPV.max_product_ord,
+                    ordinamentoPV.od_dep_pv_ord, ordinamentoPV.od_pv_dep_ord, ordinamentoPV.od_pv_pv_ord, settings.MINxKM, settings.TEMPO_MAX, ordinamentoPV.valore_ord, ordinamentoPV.ordini_ord, ordinamentoPV.ordiniD_ord, ordinamentoPV.ordiniB95_ord, ordinamentoPV.ordiniBD_ord, ordinamentoPV.ordiniBS_ord, 
+                    ordinamentoPV.ordiniAlpino_ord, ordinamentoPV.ordiniBluAlpino_ord, ordinamentoPV.ordini_piumeno_ord, ordinamentoPV.MioOrdine_ord, settings.GIACENZA_MIN, settings.KM_MIN, ordinamentoMezzi.capmax, ordinamentoMezzi.capton, settings.dens_D, settings.dens_B95, settings.dens_BD, settings.dens_BS, 
+                    settings.MAXDROP, MENOMILLE[t], conn);
                 //close(conn);
 
                 // Inserisci nel db
                 // TargheTempo = TEMPO_MAX * ones(length(IdM), 1);
                 conn.ConnectionString =
-                    "Server=localhost\\SQLEXPRESS;" +
+                    "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
                     "Integrated Security=True";
                 // [IdRunner] = CreateRunner('sacile', baseCarico, data, conn);
                 CreateVersionClass createVersionClass = new CreateVersionClass();
-                int IdVersione = createVersionClass.CreateVersion(baseCarico, "sacile", data, ((int[])idSettings[0])[t], IdRunner, conn);
+                int IdVersione = createVersionClass.CreateVersion(baseCarico, "sacile", data, idSettings.Id[t], IdRunner, conn);
                 // close(conn)
 
                 int ii = 1;
-                int n_viaggio = (int)calcoloViaggi[4];
+                int n_viaggio = (int)calcoloViaggi.n_viaggio;
                 while (ii <= n_viaggio)
                 {
                     conn.ConnectionString =
-                    "Server=localhost\\SQLEXPRESS;" +
+                    "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
                     "Integrated Security=True";
-                    double[] capton = (double[])ordinamentoMezzi[0];
-                    int[] targheViaggi = (int[])calcoloViaggi[1];
+                    double[] capton = ordinamentoMezzi.capton;
+                    double[] targheViaggi = calcoloViaggi.TargheViaggi;
 
-                    short[] tempo = (short[])calcoloViaggi[14];
-                    double[] lun = (double[])calcoloViaggi[11];
-                    int[] IdM = (int[])calcoloViaggi[2];
+                    List<short> tempo = calcoloViaggi.tempo;
+                    List<double> lun = calcoloViaggi.lun;
+                    int[] IdM = calcoloViaggi.IdM;
+                    int IdViaggio;
                     if (ii <= capton.Length && targheViaggi[ii] != -1)
                     {
                         CreateViaggioClass createViaggioClass = new CreateViaggioClass();
-                        int IdViaggio = createViaggioClass.CreateViaggio(IdVersione, data, lun[ii], tempo[ii], IdM[targheViaggi[ii]], conn);
+                        IdViaggio = createViaggioClass.CreateViaggio(IdVersione, data, lun[ii], tempo[ii], IdM[(int)targheViaggi[ii]], conn);
                     }
                     else
                     {
                         CreateViaggioNoMezzoClass createViaggioNoMezzoClass = new CreateViaggioNoMezzoClass();
-                        int IdViaggio = createViaggioNoMezzoClass.CreateViaggioNoMezzo(IdVersione, data, lun[ii], tempo[ii], -1, conn);
+                        IdViaggio = createViaggioNoMezzoClass.CreateViaggioNoMezzo(IdVersione, data, lun[ii], tempo[ii], -1, conn);
                     }
                     //close(conn);
 
-                    double[][] viaggio = (double[][])calcoloViaggi[15];
-                    for(int j = 0; j < viaggio[ii].Length; j++)
+                    List<List<double>> viaggio = calcoloViaggi.viaggio;
+                    for(int j = 0; j < viaggio[ii].Capacity; j++)
                     {
                         if(viaggio[ii][j] != 0)
                         {
-                            int i = 0;
-                            // TODO Creare funzione che cerca in due matrici se alla posizione (x,y) di entrambe si trovano due valori specifici.
-                            // la ricerca avviene riga per riga e l'array di ritorno conterrà la posizione (x,y)
-                            //ciao
+                            List<int> posizione = new List<int>();
+                            for(int l=0;l<ordinamentoPV.pv_ord.Length;l++)
+                            {
+                                if (ordinamentoPV.pv_ord[l] == viaggio[ii][j] && ordinamentoPV.MioOrdine_ord[l] == calcoloViaggi.MioOrdineViaggio[ii][j])
+                                    posizione[l] = l;
+                                    
+                            }
+                            string Quantita;
+                            for (int k = 0; k < posizione.Capacity; k++)
+                            {
+                                conn.ConnectionString =
+                                "Server=LAPTOP-DT8KB2TQ;" +
+                                "Database=Matlab;" +
+                                "Integrated Security=True";
+                                Quantita = ordinamentoPV.ordiniD_ord[posizione[k]].ToString() + "," +
+                                   ordinamentoPV.ordiniB95_ord[posizione[k]].ToString() + "," +
+                                   ordinamentoPV.ordiniBD_ord[posizione[k]].ToString() + "," +
+                                   ordinamentoPV.ordiniBS_ord[posizione[k]].ToString() + "," +
+                                   ordinamentoPV.ordiniAlpino_ord[posizione[k]].ToString() + "," +
+                                   ordinamentoPV.ordiniBluAlpino_ord[posizione[k]].ToString();
+                                RiempiViaggioClass riempiViaggio = new RiempiViaggioClass();
+                                riempiViaggio.RiempiViaggio(IdViaggio, (int)viaggio[ii][j], j, Quantita, conn);
+                                conn.Close();
+                            }
                         }
                     }
+                    ii++;
                 }
+                conn.Close();
+                conn.ConnectionString =
+                "Server=LAPTOP-DT8KB2TQ;" +
+                "Database=Matlab;" +
+                "Integrated Security=True";
+                CambiaNotificaClass cambiaNotifica = new CambiaNotificaClass();
+                cambiaNotifica.CambiaNotifica(IdRunner, IdVersione, conn);
+                conn.Close();
+                Console.WriteLine("Fine");
             }
         }
     }
