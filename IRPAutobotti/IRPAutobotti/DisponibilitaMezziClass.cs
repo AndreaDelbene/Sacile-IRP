@@ -46,7 +46,7 @@ namespace IRPAutobotti
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma
             double[] captonTemp = new double[turno.Length];
-            int[] IdM = (from IDataRecord r in reader select (int)r["Id"]).ToArray();
+            int[] IdM = (from IDataRecord r in reader select (int)r["id"]).ToArray();
             // 17 è la colonna finale degli scomparti anteriori
             //prendo le colonne da 8 a 18 per gli Anteriori, da 20 a 30 per i Posteriori
             for (int i=0;i<10;i++)

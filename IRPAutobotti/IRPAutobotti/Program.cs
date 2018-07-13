@@ -18,7 +18,7 @@ namespace IRPAutobotti
             SqlConnection conn = new SqlConnection();
             //"Server=localhost\\SQLEXPRESS;"
             conn.ConnectionString =
-            "Server=LAPTOP-DT8KB2TQ;" +
+            "Server=localhost\\SQLEXPRESS;" +
             "Database=Matlab;" +
             "Integrated Security=True";
 
