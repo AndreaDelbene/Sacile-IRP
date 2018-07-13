@@ -43,11 +43,12 @@ namespace IRPAutobotti
             conn.Close();
             comm.CommandText = "Matlab.BIS.getSettingVariabiliById";
             comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Clear();
             comm.Parameters.Add("@indice", SqlDbType.Int);
 
             for (int i=0;i<Id.Length;i++)
             {
-
+                
                 comm.Parameters["@indice"].Value = Id[i];
                 comm.Connection = conn;
 
@@ -57,10 +58,9 @@ namespace IRPAutobotti
                 reader.Read();
 
                 string soglie = (string) reader["soglie"];
-
-                string[] S = soglie.Split(Convert.ToChar(soglie), ';');
-                MENOMILLE[i] = Convert.ToDouble(Convert.ToChar(S[2])) / 1000;
-                RIEMPIMENTOMAX[i] = Convert.ToDouble(Convert.ToChar(S[1])) / 1000;
+                string[] S = soglie.Split(';');
+                MENOMILLE[i] = Convert.ToDouble(S[1]) / 1000;
+                RIEMPIMENTOMAX[i] = Convert.ToDouble(S[0]) / 1000;
                 reader.Close();
                 conn.Close();
             }
