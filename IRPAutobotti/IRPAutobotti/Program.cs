@@ -36,9 +36,9 @@ namespace IRPAutobotti
             DisponibilitaMezziStruct disponibilitaMezzi = disponibilitaMezziClass.DisponibilitaMezzi(attivo, data, baseCarico, conn);
             double[,] scomparti = disponibilitaMezzi.scomparti;
             double[] capmaxtemp = new double[scomparti.Length];
-            for (int i = 0; i < scomparti.GetLength(1); i++)
+            for (int i = 0; i < scomparti.GetLength(0); i++)
             {
-                for(int j = 0; j < scomparti.GetLength(0); j++)
+                for(int j = 0; j < scomparti.GetLength(1); j++)
                 {
                     capmaxtemp[i] += scomparti[i,j];
                 }
