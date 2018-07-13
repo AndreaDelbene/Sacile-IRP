@@ -40,13 +40,19 @@ namespace IRPAutobotti
 
             List<int[]> scompartiAnt = new List<int[]>();
             List<int[]> scompartiPost = new List<int[]>();
+
+
+            long[] IdMLong = (from IDataRecord r in reader select (long)r["id"]).ToArray();
+            int[] IdM = IdMLong.Select(item => unchecked((int)item)).ToArray();
+
             //capacità tonnellate
             int[] turno = (from IDataRecord r in reader select (int)r["Turno"]).ToArray();
             double[] captonAnt = new double[turno.Length];
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma
             double[] captonTemp = new double[turno.Length];
-            int[] IdM = (from IDataRecord r in reader select (int)r["id"]).ToArray();
+
+            
             // 17 è la colonna finale degli scomparti anteriori
             //prendo le colonne da 8 a 18 per gli Anteriori, da 20 a 30 per i Posteriori
             for (int i=0;i<10;i++)
