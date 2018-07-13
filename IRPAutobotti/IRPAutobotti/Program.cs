@@ -12,13 +12,13 @@ namespace IRPAutobotti
             int attivo = 1;
             int baseCarico = 9;
             String data = "2018-01-15";
-            String formatOut = "mm-dd-yyyy";
+            String formatOut = "yyyy-mm-dd";
 
             //Carico i settings dal database
             SqlConnection conn = new SqlConnection();
             //"Server=localhost\\SQLEXPRESS;"
             conn.ConnectionString =
-            "Server=localhost\\SQLEXPRESS;" +
+            "Server=LAPTOP-DT8KB2TQ;" +
             "Database=Matlab;" +
             "Integrated Security=True";
 
