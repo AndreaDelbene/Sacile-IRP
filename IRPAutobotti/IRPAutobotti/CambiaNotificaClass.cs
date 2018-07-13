@@ -21,6 +21,8 @@ namespace IRPAutobotti
             conn.Open();
 
             comm.ExecuteReader();
+
+            conn.Close();
         }
     }
 }

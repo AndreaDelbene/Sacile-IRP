@@ -52,7 +52,8 @@ namespace IRPAutobotti
             poStruct.ordinipiumeno = (from IDataRecord r in reader select (double)r["modalit"]).ToArray();
             poStruct.MioOrdine= (from IDataRecord r in reader select (double)r["IdMioOrdine"]).ToArray();
 
-
+            reader.Close();
+            conn.Close();
             return poStruct;
         }
     }

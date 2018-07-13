@@ -29,6 +29,9 @@ namespace IRPAutobotti
             reader = comm.ExecuteReader();
             
             int IdViaggio = (int)reader["Data"];
+
+            reader.Close();
+            conn.Close();
             return IdViaggio;
         }
     }

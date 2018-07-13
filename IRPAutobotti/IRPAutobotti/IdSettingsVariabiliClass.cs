@@ -40,12 +40,15 @@ namespace IRPAutobotti
             double[] MENOMILLE = new double[Id.Length];
             double[] RIEMPIMENTOMAX = new double[Id.Length];
             reader.Close();
+            conn.Close();
+            comm.CommandText = "Matlab.BIS.getSettingVariabiliById";
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@indice", SqlDbType.Int);
+
             for (int i=0;i<Id.Length;i++)
             {
 
-                comm.CommandText = "Matlab.BIS.getSettingVariabiliById";
-                comm.CommandType = CommandType.StoredProcedure;
-                comm.Parameters.AddWithValue("@id_base", Id[i]);
+                comm.Parameters["@indice"].Value = Id[i];
                 comm.Connection = conn;
 
                 conn.Open();
@@ -58,6 +61,8 @@ namespace IRPAutobotti
                 string[] S = soglie.Split(Convert.ToChar(soglie), ';');
                 MENOMILLE[i] = Convert.ToDouble(Convert.ToChar(S[2])) / 1000;
                 RIEMPIMENTOMAX[i] = Convert.ToDouble(Convert.ToChar(S[1])) / 1000;
+                reader.Close();
+                conn.Close();
             }
             //assegno le variabili nella struct
             isvStruct.Id = Id;

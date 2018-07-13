@@ -38,6 +38,7 @@ namespace IRPAutobotti
             }
             DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
             ppStruct.preferenze = X;
+            conn.Close();
             return ppStruct;
         }
     }

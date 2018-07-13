@@ -91,6 +91,7 @@ namespace IRPAutobotti
             csStruct.MAXDROP = (int)reader["Corsia"];
 
             reader.Close();
+            conn.Close();
             return csStruct;
         }
     }

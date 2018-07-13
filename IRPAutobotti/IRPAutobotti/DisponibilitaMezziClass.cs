@@ -90,6 +90,8 @@ namespace IRPAutobotti
             dmStruct.targatemp1 = targaTemp1;
             dmStruct.targatemp2 = targaTemp2;
             dmStruct.scomparti = scomparti;
+            reader.Close();
+            conn.Close();
             return dmStruct;
         }
     }

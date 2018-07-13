@@ -31,6 +31,8 @@ namespace IRPAutobotti
 
            
             int IdVersion = (int)reader["Data"];
+            reader.Close();
+            conn.Close();
             return IdVersion;
         }
     }

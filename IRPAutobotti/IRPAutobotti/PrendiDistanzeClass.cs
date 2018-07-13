@@ -91,6 +91,9 @@ namespace IRPAutobotti
 
                 }
             }
+
+            reader.Close();
+            conn.Close();
             return pdStruct;
         }
 

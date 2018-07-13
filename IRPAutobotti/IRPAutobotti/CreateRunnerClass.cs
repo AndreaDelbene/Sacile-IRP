@@ -29,6 +29,9 @@ namespace IRPAutobotti
             reader = comm.ExecuteReader();
             
             int IdRunner = (int)reader["Data"];
+
+            reader.Close();
+            conn.Close();
             return IdRunner;
         }
     }

@@ -32,6 +32,9 @@ namespace IRPAutobotti
             {
                 x = -1;
             }
+
+            reader.Close();
+            conn.Close();
             return x;
         }
     }
