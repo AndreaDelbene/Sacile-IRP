@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -34,34 +35,36 @@ namespace IRPAutobotti
             comm.Parameters.AddWithValue("@idBase", baseCarico);
             comm.Connection = conn;
 
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
-
-            reader = comm.ExecuteReader();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
             List<int[]> scompartiAnt = new List<int[]>();
             List<int[]> scompartiPost = new List<int[]>();
 
 
-            long[] IdMLong = (from IDataRecord r in reader select (long)r["id"]).ToArray();
+            long[] IdMLong = (from DataRow r in table.Rows select (long)r["id"]).ToArray();
             int[] IdM = IdMLong.Select(item => unchecked((int)item)).ToArray();
 
             //capacità tonnellate
-            int[] turno = (from IDataRecord r in reader select (int)r["Turno"]).ToArray();
+            int[] turno = (from DataRow r in table.Rows select (int)r["Turno"]).ToArray();
             double[] captonAnt = new double[turno.Length];
             double[] captonPost = new double[turno.Length];
             //variabile temporanea per la somma
             double[] captonTemp = new double[turno.Length];
 
-            
+
+
             // 17 è la colonna finale degli scomparti anteriori
-            //prendo le colonne da 8 a 18 per gli Anteriori, da 20 a 30 per i Posteriori
-            for (int i=0;i<10;i++)
+            //prendo le colonne da 8 a 18 per gli Anteriori, da 21 a 30 per i Posteriori
+            for (int i = 0; i < 10; i++)
             {
-                int[] scompartiAntTemp = (from IDataRecord r in reader select (int)r.GetValue(8 + i)).ToArray();
-                int[] scompartiPostTemp = (from IDataRecord r in reader select (int)r.GetValue(20 + i)).ToArray();
-                scompartiAnt.Add(scompartiAntTemp);
-                scompartiPost.Add(scompartiPostTemp);
+                //var temp = ;
+                scompartiAnt.Add((from DataRow r in table.Rows select (int)((decimal)r[7 + i])).ToArray());
+                scompartiPost.Add((from DataRow r in table.Rows select (int)((decimal)r[19 + i])).ToArray());
             }
+
             double[,] scomparti = new double[scompartiPost.Count, scompartiPost[0].Length];
             // sommo quindi membro a membro ogni elemento e lo metto dentro ad una matrice di interi
             for(int i=0;i<scompartiAnt.Count;i++)
@@ -72,16 +75,16 @@ namespace IRPAutobotti
                 }
             }
             // prendo i valori dalle colonne
-            captonAnt = (from IDataRecord r in reader select (double)r["PortUtilAnt"]).ToArray();
-            captonPost = (from IDataRecord r in reader select (double)r["PortUtilPost"]).ToArray();
+            captonAnt = (from DataRow r in table.Rows select (double)(float)r["PortUtilAnt"]).ToArray();
+            captonPost = (from DataRow r in table.Rows select (double)(float)r["PortUtilPost"]).ToArray();
             for(int i=0;i<captonAnt.Length;i++)
             {
                 //somma membro a membro
                 captonTemp[i] = captonAnt[i] + captonPost[i];
             }
             //stesso ragionamento per le targhe
-            string[] targaAnt = (from IDataRecord r in reader select (string)r["targaAnt"]).ToArray();
-            string[] targaPost = (from IDataRecord r in reader select (string)r["targaPost"]).ToArray();
+            string[] targaAnt = (from DataRow r in table.Rows select (string)r["targaAnt"]).ToArray();
+            string[] targaPost = (from DataRow r in table.Rows select (string)r["targaPost"]).ToArray();
             //creo le variabili temporanee
             string[] targaTemp1 = new string[targaAnt.Length];
             string[] targaTemp2 = new string[targaAnt.Length];
@@ -96,7 +99,7 @@ namespace IRPAutobotti
             dmStruct.targatemp1 = targaTemp1;
             dmStruct.targatemp2 = targaTemp2;
             dmStruct.scomparti = scomparti;
-            reader.Close();
+
             conn.Close();
             return dmStruct;
         }
