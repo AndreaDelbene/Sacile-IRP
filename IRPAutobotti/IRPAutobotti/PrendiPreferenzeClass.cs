@@ -29,15 +29,12 @@ namespace IRPAutobotti
             comm.Parameters.AddWithValue("@base", baseCarico);
             comm.Connection = conn;
 
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
-            ppStruct.preferenze = X;
+            ppStruct.preferenze = table;
             conn.Close();
             return ppStruct;
         }

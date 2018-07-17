@@ -37,16 +37,15 @@ namespace IRPAutobotti
             comm.Parameters.AddWithValue("@peso", peso);
             comm.Connection = conn;
 
-            System.Console.WriteLine("Apro connessione..");
+            // Aumento del time out per via della complessità della stored procedure
+            comm.CommandTimeout = 120;
 
             SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
             DataTable table = new DataTable();
             adapter.Fill(table);
 
-            var a = (from DataRow r in table.Rows select r["codicePv"]).ToArray();
-
-            poStruct.pv = (from DataRow r in table.Rows select (double)(decimal)r["codicePv"]).ToArray();
+            poStruct.pv = (from DataRow r in table.Rows select (double)(int)r["codicePv"]).ToArray();
             poStruct.ordini = (from DataRow r in table.Rows select (double)(decimal)r["QMille"]).ToArray();
             poStruct.ordiniD = (from DataRow r in table.Rows select (double)(decimal)r["D"]).ToArray();
             poStruct.ordiniB95 = (from DataRow r in table.Rows select (double)(decimal)r["B95"]).ToArray();
@@ -54,8 +53,9 @@ namespace IRPAutobotti
             poStruct.ordiniBD = (from DataRow r in table.Rows select (double)(decimal)r["BD"]).ToArray();
             poStruct.ordiniAlpino = (from DataRow r in table.Rows select (double)(decimal)r["GA"]).ToArray();
             poStruct.ordiniBluAlpino = (from DataRow r in table.Rows select (double)(decimal)r["GBA"]).ToArray();
-            poStruct.ordinipiumeno = (from DataRow r in table.Rows select (double)(decimal)r["modalit"]).ToArray();
-            poStruct.MioOrdine= (from DataRow r in table.Rows select (double)(decimal)r["IdMioOrdine"]).ToArray();
+
+            poStruct.ordinipiumeno = (from DataRow r in table.Rows select (double)(short)r["modalit"]).ToArray();
+            poStruct.MioOrdine= (from DataRow r in table.Rows select (double)(int)r["IdMioOrdine"]).ToArray();
 
             conn.Close();
             return poStruct;
