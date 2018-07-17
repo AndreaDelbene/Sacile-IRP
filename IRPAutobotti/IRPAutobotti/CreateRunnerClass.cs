@@ -24,13 +24,13 @@ namespace IRPAutobotti
             comm.Parameters.AddWithValue("@algo", "sacile");
             comm.Connection = conn;
 
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
-            reader = comm.ExecuteReader();
-            
-            int IdRunner = (int)reader["Data"];
+            int IdRunner = (int)(decimal)table.Rows[0]["id_runner"];
 
-            reader.Close();
             conn.Close();
             return IdRunner;
         }

@@ -36,17 +36,12 @@ namespace IRPAutobotti
             comm.Parameters.AddWithValue("@data", data);
             comm.Connection = conn;
 
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
-            reader = comm.ExecuteReader();
-
-            var tables = new DataTable();
-            using (var curs = new SqlDataAdapter(comm))
-            {
-                curs.Fill(tables);
-            }
-            DataTable X = tables.DefaultView.ToTable(false, tables.Columns["Data"].ColumnName);
-            pdStruct.od_pv_pv_completa = X;
+            pdStruct.od_pv_pv_completa = table;
 
             double[] od_dep_pv = new double[n_ordini];
             double[] od_pv_dep = new double[n_ordini];
@@ -54,15 +49,18 @@ namespace IRPAutobotti
             double[] temp_od_dep_pv = new double[n_ordini];
             double[] temp_od_pv_dep = new double[n_ordini];
 
+            double[,] od_pv_pv = new double[n_ordini, n_ordini];
+
             for (int i = 0; i < n_ordini; i++)
             {
                 string exp1 = "p1 = " + baseCarico + " and p2 = " + pv[i];
                 string exp2 = "p1 = " + pv[i] + " and p2 = " + baseCarico;
-                double[] temp1 = X.AsEnumerable().Select(r => r.Field<double>(exp1)).ToArray();
-                temp_od_dep_pv[i] = temp1[3];
-                double[] temp2 = X.AsEnumerable().Select(r => r.Field<double>(exp2)).ToArray();
-                temp_od_pv_dep[i] = temp2[3];
-                int[,] od_pv_pv = new int[n_ordini,n_ordini];
+                DataRow[] datarowTemp1 = table.Select(exp1);
+                DataRow[] datarowTemp2 = table.Select(exp2);
+
+                temp_od_dep_pv[i] = (double)(decimal)datarowTemp1[0][2];
+                temp_od_pv_dep[i] = (double)(decimal)datarowTemp2[0][2];
+
                 for(int j = 0; j < n_ordini; j++)
                 {
                     if (pv[i] == pv[j])
@@ -74,8 +72,8 @@ namespace IRPAutobotti
                         try
                         {
                             string exp = "p1 = " + pv[i] + " and p2 = " + pv[j];
-                            int[] temp = X.AsEnumerable().Select(r => r.Field<int>(exp)).ToArray();
-                            od_pv_pv[i, j] = temp[3];
+                            DataRow[] datarowTemp = table.Select(exp);
+                            od_pv_pv[i, j] = (double)(decimal)datarowTemp[0][2];
                         }
                         catch (Exception e)
                         {
@@ -84,16 +82,31 @@ namespace IRPAutobotti
                     }
                 }
             }
+
+            double[,] preferenza_pv_pv = new double[n_ordini,n_ordini];
             for (int i = 0; i < n_ordini; i++)
             {
                 for (int j = 0; j < n_ordini; j++)
                 {
-
+                    string exp = "p1 = " + pv[i] + " and p2 = " + pv[j];
+                    DataRow[] datarowTemp = preferenze.Select(exp);
+                    if(datarowTemp.Length == 0)
+                    {
+                        preferenza_pv_pv[i, j] = 0;
+                    }
+                    else
+                    {
+                        preferenza_pv_pv[i, j] = (double)(int)datarowTemp[0][2];
+                    }
                 }
             }
 
-            reader.Close();
             conn.Close();
+
+            pdStruct.od_dep_pv = temp_od_dep_pv;
+            pdStruct.od_pv_dep = temp_od_pv_dep;
+            pdStruct.od_pv_pv = od_pv_pv;
+            pdStruct.preferenza_pv_pv = preferenza_pv_pv;
             return pdStruct;
         }
 

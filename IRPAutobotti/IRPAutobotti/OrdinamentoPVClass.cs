@@ -129,6 +129,7 @@ namespace IRPAutobotti
             opvStruct.max_product_ord = max_product_ord;
             opvStruct.ordiniD_ord = ordiniD_ord;
             opvStruct.ordiniBD_ord = ordiniBD_ord;
+            opvStruct.ordiniBS_ord = ordiniBS_ord;
             opvStruct.ordiniB95_ord = ordiniB95_ord;
             opvStruct.ordiniAlpino_ord = ordiniAlpino_ord;
             opvStruct.ordiniBluAlpino_ord = ordiniBluAlpino_ord;

@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace IRPAutobotti
@@ -19,21 +20,35 @@ namespace IRPAutobotti
 
             conn.Open();
 
-            SqlDataReader reader = comm.ExecuteReader();
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
+            //conn.Open();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
-
-            string X = reader["Data"].ToString();
+            List<double> data = new List<double>();
+            foreach(DataRow r in table.Rows)
+            {
+                foreach(var item in r.ItemArray)
+                {
+                    System.Console.Write(item+"\t");
+                }
+                System.Console.WriteLine();
+            }
+            foreach(DataRow r in table.Rows)
+            {
+                data.Add((int)r[1]);
+            }
+            
             int x;
             try
             {
-                x = X.Length;
+                x = data.Count;
             }
             catch
             {
                 x = -1;
             }
 
-            reader.Close();
             conn.Close();
             return x;
         }

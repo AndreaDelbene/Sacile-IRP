@@ -84,7 +84,11 @@ namespace IRPAutobotti
             double[] prodottomax = new double[n_ordini];
             for(int i = 0; i < n_ordini; i++)
             {
-                prodottomax[i] = prodottiArray[i].Max();
+                List<double> productsArray = new List<double>();
+                for (int ii = 0; ii < prodottiArray.Count; ii++)
+                    productsArray.Add(prodottiArray[ii][i]);
+                productsArray.ToArray();
+                prodottomax[i] = productsArray.Max();
             }
 
             // prendo la matrice delle preferenze
@@ -145,10 +149,10 @@ namespace IRPAutobotti
                     prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
 
                 // ALGORITMO
-                conn.ConnectionString =
+                /*conn.ConnectionString =
                     "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
-                    "Integrated Security=True";
+                    "Integrated Security=True";*/
                 // [MioOrdineViaggio, targheViaggi, IdM, targa, n_viaggio, scartato, sequenza, giacenza_stored, giacenzapeso, giacenzapeso_stored, viaggio_temp, lun, da_servire, tempo_temp, tempo, viaggio, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord]
                 CalcoloViaggiClass calcoloViaggiClass = new CalcoloViaggiClass();
                 CalcoloViaggiStruct calcoloViaggi = calcoloViaggiClass.CalcoloViaggi(disponibilitaMezzi.IdM, targaOriginale, distanze.od_pv_pv_completa, n_OrdiniOriginali, ordinamentoPV.pv_ord, baseCarico, ordinamentoPV.ordinipeso_ord, settings.CARICA, settings.SCARICA, settings.SCARICALITRO, ordinamentoPV.max_product_ord,
@@ -159,10 +163,10 @@ namespace IRPAutobotti
 
                 // Inserisci nel db
                 // TargheTempo = TEMPO_MAX * ones(length(IdM), 1);
-                conn.ConnectionString =
+                /*conn.ConnectionString =
                     "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
-                    "Integrated Security=True";
+                    "Integrated Security=True";*/
                 // [IdRunner] = CreateRunner('sacile', baseCarico, data, conn);
                 CreateVersionClass createVersionClass = new CreateVersionClass();
                 int IdVersione = createVersionClass.CreateVersion(baseCarico, "sacile", data, idSettings.Id[t], IdRunner, conn);
@@ -172,10 +176,10 @@ namespace IRPAutobotti
                 int n_viaggio = (int)calcoloViaggi.n_viaggio;
                 while (ii <= n_viaggio)
                 {
-                    conn.ConnectionString =
+                    /*conn.ConnectionString =
                     "Server=LAPTOP-DT8KB2TQ;" +
                     "Database=Matlab;" +
-                    "Integrated Security=True";
+                    "Integrated Security=True";*/
                     double[] capton = ordinamentoMezzi.capton;
                     double[] targheViaggi = calcoloViaggi.TargheViaggi;
 
