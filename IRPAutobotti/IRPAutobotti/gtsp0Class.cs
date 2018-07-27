@@ -41,7 +41,7 @@ namespace IRPAutobotti
                 double r = rnd.Next(1);
 
                 double cc = 0;
-                int c = 0;
+                int c = -1;
                 while (r > cc)
                 {
                     c++;
