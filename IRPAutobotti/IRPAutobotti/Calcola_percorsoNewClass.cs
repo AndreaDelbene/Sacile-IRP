@@ -40,10 +40,16 @@ namespace IRPAutobotti
             {
                 string exp1 = "p1 = " + baseCarico + " and p2 = " + giro[i];
                 string exp2 = "p1 = " + giro[i] + " and p2 = " + baseCarico;
-                double[] temp1 = X.AsEnumerable().Select(r => r.Field<double>(exp1)).ToArray();
-                temp_od_dep_pv[i] = temp1[3];
-                double[] temp2 = X.AsEnumerable().Select(r => r.Field<double>(exp2)).ToArray();
-                temp_od_pv_dep[i] = temp2[3];
+                DataRow[] datarow_temp = X.Select(exp1).ToArray();
+                foreach (DataRow r in datarow_temp)
+                {
+                    temp_od_dep_pv[i] = (double)(decimal)r[2];
+                }
+                datarow_temp = X.Select(exp2).ToArray();
+                foreach (DataRow r in datarow_temp)
+                {
+                    temp_od_pv_dep[i] = (double)(decimal)r[2];
+                }
                 for(int j=0;j<g;j++)
                 {
                     if(giro[i]==giro[j])
@@ -51,8 +57,11 @@ namespace IRPAutobotti
                     else
                     {
                         string exp3 = "p1 = " + giro[i] + " and p2 = " + giro[j];
-                        double[] temp3 = X.AsEnumerable().Select(r => r.Field<double>(exp2)).ToArray();
-                        temp_od_pv_pv[i, j] = temp3[3];
+                        datarow_temp = X.Select(exp3).ToArray();
+                        foreach (DataRow r in datarow_temp)
+                        {
+                            temp_od_pv_pv[i, j] = (double)(decimal)r[2];
+                        }
                     }
                 }
 
@@ -81,9 +90,12 @@ namespace IRPAutobotti
                         od[i, j] = temp_od_pv_pv[i-1, j-1];
                 }
             }
+            System.Console.WriteLine("Enter tsp in percorsoNew");
             TspStruct returnStruct = new TspStruct();
             tspClass t = new tspClass();
             returnStruct = t.tsp(1000, 0.05, 0.8, od, 0);
+            System.Console.WriteLine("Exit tsp in percorsoNew");
+
             int[] tour = returnStruct.pi;
             cpnStruct.lun[n_viaggio] = returnStruct.lunghezza;
             for(int i=0;i<tour.Length;i++)

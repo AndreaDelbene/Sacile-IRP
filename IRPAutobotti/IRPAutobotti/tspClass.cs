@@ -19,10 +19,9 @@ namespace IRPAutobotti
 
         public TspStruct tsp(int N, double rho, double alpha, double[,] A, int traj)
         {
-            int[] I = Enumerable.Range(0, A.Length).ToArray();  // Indexes of S
-
+            int[] I = new int[1];
             //GetLength(0) ritorna il numero di colonne mentre con 1, il numero di righe
-            int n = A.GetLength(0);
+            int n = A.GetLength(1);
             double tol = 0.005;
             int z = 7;
             int[] kk = new int[n];
@@ -38,7 +37,10 @@ namespace IRPAutobotti
                 for (int i = 0; i < n; i++)
                     for (int j = 0; j < n; j++)
                         if(i != j)
-                            P[i, j] = 1 / (n - 1);
+                        {
+                            double value = 1.0 / (n - 1);
+                            P[i, j] = value;
+                        }
             }
             else
             {
@@ -57,22 +59,30 @@ namespace IRPAutobotti
             stspClass stsp = new stspClass();
             while (Max(AbsOfDifference(P,Pold)) > tol)
             {
-                for(int i = 0; i < N; i++)
+                System.Console.WriteLine("while in tsp");
+                for (int i = 0; i < N; i++)
                 {
-                    if(traj == 0)
+                    System.Console.WriteLine("i loop: " + i);
+                    if (traj == 0)
                     {
-                        X[i] = gtsp0.gtsp0(P);
+                        System.Console.WriteLine("Enter gtsp0");
+                        X.Insert(i, gtsp0.gtsp0(P));
+                        System.Console.WriteLine("Exit gtsp0");
                     }
                     else
                     {
-                        X[i] = gtsp1.gtsp1(P);
+                        System.Console.WriteLine("Enter gtsp1");
+                        X.Insert(i, gtsp1.gtsp1(P));
+                        System.Console.WriteLine("Exit gtsp1");
                     }
 
 
                     int[] x = new int[n];
                     if(traj == 0)
                     {
+                        System.Console.WriteLine("Enter stsp");
                         S[i] = stsp.stsp(X[i], A);
+                        System.Console.WriteLine("Exit stsp");
                     }
                     else
                     {
@@ -88,6 +98,7 @@ namespace IRPAutobotti
                     }
                 }
 
+                I = Enumerable.Range(0, S.Length).ToArray();  // Indexes of S
                 Array.Sort(S, I);
                 g = (int)Math.Floor(rho * N);
                 double[,] w = new double[n, n];
@@ -98,7 +109,7 @@ namespace IRPAutobotti
                         for (int j = 0; j < n; j++)
                         {
                             int ss = 0;
-                            for (int k = 0; i < g; k++)
+                            for (int k = 0; k < g; k++)
                             {
                                 int pos = search(X, I[k], i);
                                 if (pos != -1)
@@ -106,7 +117,7 @@ namespace IRPAutobotti
                                     int ii = kk[pos];
                                     if (ii < n)
                                     {
-                                        if (X[I[k]][ii + 1] == j)
+                                        if (X[I[k]][ii] == j)
                                             ss++;
                                     }
                                     else
@@ -132,7 +143,7 @@ namespace IRPAutobotti
                                 if(Y[I[k]][i] == j)
                                     ss++;
                             }
-                            w[i, j] = ss / g;
+                            w[i, j] = (double)ss / (double)g;
                         }
                     }
                 }
@@ -154,11 +165,11 @@ namespace IRPAutobotti
             int[] pi = new int[X.Capacity];
             if(traj == 0)
             {
-                pi = X[I[1]];
+                pi = X[I[0]];
             }
             else
             {
-                pi = Y[I[1]];
+                pi = Y[I[0]];
             }
             tspStruct.lunghezza = S[g];
             tspStruct.pi = pi;

@@ -10,10 +10,10 @@ namespace IRPAutobotti
 
         public int[] gtsp0(double[,] Pk)
         {
-            int n = Pk.Length; //n==m
+            int n = Pk.GetLength(0); //n==m
             int[] x = new int[n];
             double[,] Pkp = Pk;
-            x[1] = 1;
+            x[0] = 0;
             Random rnd = new Random();
             for (int k=0;k<n-1;k++)
             {
@@ -38,10 +38,10 @@ namespace IRPAutobotti
                     }
                 }
                 //creo un numero casuale tra 0 e 1
-                double r = rnd.Next(1);
+                double r = rnd.NextDouble();
 
                 double cc = 0;
-                int c = 0;
+                int c = -1;
                 while (r > cc)
                 {
                     c++;

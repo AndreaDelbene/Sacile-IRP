@@ -87,6 +87,7 @@ namespace IRPAutobotti
 
             for (int i=0;i<n_ordini;i++)
             {
+                Console.WriteLine("n_ordini: " + n_ordini);
                 //quanto rimane in ogni mezzo dopo avegli assegnato il quantitativo in PV
                 int nelWhile = 0;
                 int NoMezzo = 0;
@@ -101,7 +102,6 @@ namespace IRPAutobotti
                 int t = 0;
                 if(da_servire[i]==1)
                 {
-                    Console.WriteLine(t);
                     n_viaggio++;
                     if (n_viaggio == 14)
                         t = 1;
@@ -130,7 +130,7 @@ namespace IRPAutobotti
                     da_servire[i] = 0;
                     double[] maschera = da_servire;
                     fineviaggio = 0;
-                    //in j ho il migliore che si accoppia e in M il suo valoreù
+                    //in j ho il migliore che si accoppia e in M il suo valore
                     double[] temp = new double[maschera.Length];
                     int o = 0;
                     for (o=0;o<maschera.Length;o++)
@@ -158,9 +158,11 @@ namespace IRPAutobotti
                     //cerco secondo drop
                     if (n_viaggio <= capton.Length)
                     {
+                        Console.WriteLine("Entering Line 161");
                         nelWhile = 0;
                         while(trovato==0 && M>0)
                         {
+                            Console.WriteLine("Line 164");
                             nelWhile = 1;
                             Int16 temposcaricasenzaj = Convert.ToInt16(temposcarica);
                             Int16 tempoguidasenzaj = Convert.ToInt16(tempoguida);
@@ -182,10 +184,11 @@ namespace IRPAutobotti
                             if (da_servire[j]==1 && giacenzapeso+ordinipeso_ord[j]<=capton[n_viaggio] && 
                                 giacenza+ordini_ord[j]<=capmax[n_viaggio] && ContaTarghe[tt]<=2 && Convert.ToInt16(TargheTempo[tt]-tempo_temp)>=0)
                             {
+                                Console.WriteLine("ENTER1");
                                 nelWhile = 2;
                                 drop++;
-                                viaggio_temp[drop] = pv_ord[j];
-                                Mio_temp[drop] = MioOrdine_ord[j];
+                                viaggio_temp.Insert(drop, pv_ord[j]);
+                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                 j_temp.Insert(drop - 1, j);
                                 da_servire[j] = 0;
                                 maschera[j] = 0;
@@ -196,17 +199,21 @@ namespace IRPAutobotti
                                 TargheViaggi[n_viaggio] = targa[n_viaggio];
                                 tempoGuidaOld = Convert.ToInt16(tempo_temp);
                                 ContaTarghe[tt]++;
+                                Console.WriteLine("Finito ENTER1");
                             }
                             else //non ho trovato un pv che possa andare bene, prima di cambiare il pv provo a vedere il mezzo se può essere cambiato
                             {
+                                Console.WriteLine("Enter else ENTER1");
                                 int trovato1 = 0;
                                 int p = 1;
                                 int n_viaggio_temp = 1;
                                 while(trovato1 == 0 && p<=nTarghe)     //PRIMA ERA trovato1 != 0
                                 {
+                                    Console.WriteLine("Entering line 209");
                                     if (Convert.ToInt16(TargheTempo[p]-tempo_temp)>=0 && giacenzapeso+ordinipeso_ord[j]<=capton[n_viaggio_temp] &&
                                         giacenza+ordini_ord[j]<=capmax[n_viaggio_temp] && ContaTarghe[p]<=2)
                                     {
+                                        Console.WriteLine("ENTER2");
                                         trovato1 = 1;
                                         trovato = 1;
                                         nelWhile = 2;
@@ -214,8 +221,8 @@ namespace IRPAutobotti
                                         TargheViaggi[n_viaggio]=targa[n_viaggio_temp];
                                         ContaTarghe[p]++;
                                         drop++;
-                                        viaggio_temp[drop] = pv_ord[j];
-                                        Mio_temp[drop] = MioOrdine_ord[j];
+                                        viaggio_temp.Insert(drop, pv_ord[j]);
+                                        Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                         j_temp.Insert(drop - 1, j);
                                         da_servire[j] = 0;
                                         maschera[j] = 0;
@@ -223,10 +230,12 @@ namespace IRPAutobotti
                                         giacenzapeso = giacenzapeso + ordinipeso_ord[j];
                                         tempoGuidaOld = Convert.ToInt16(tempo_temp);
                                         tt = p;
+                                        Console.WriteLine("Finito ENTER2");
                                     }
                                     n_viaggio_temp++;
                                     p++;
                                 }
+                                Console.WriteLine("Line 238");
                                 if (trovato1 == 0)
                                 {
                                     temposcarica = Convert.ToInt16(temposcaricasenzaj);
@@ -244,10 +253,12 @@ namespace IRPAutobotti
                         }
                         if(nelWhile==0 || nelWhile==1) //non ho trovato altri pv dispoinibili x prenderlo
                         {
+                            Console.WriteLine("Entering Line 251");
                             NoMezzi = 1;
                             if (giacenzapeso <= capton[n_viaggio] &&  giacenza <= capmax[n_viaggio] && 
                                 Convert.ToInt16(TargheTempo[tt] - tempo_temp) >= 0 && ContaTarghe[tt] <= 2)
                             {
+                                Console.WriteLine("Entering Line 256");
                                 trovato = 2;
                                 TargheTempo[tt] = Convert.ToInt16(TargheTempo[tt] - tempo_temp);
                                 ContaTarghe[tt]++;
@@ -258,6 +269,7 @@ namespace IRPAutobotti
                             }
                             else
                             {
+                                Console.WriteLine("Else line 256");
                                 int trovato1 = 0;
                                 int p = 1;
                                 int n_viaggio_temp = 1;
@@ -284,6 +296,7 @@ namespace IRPAutobotti
                                 int g = 0;
                                 for (g = 0; g < viaggio_temp.Count; g++)
                                 {
+                                    Console.WriteLine("g: ", g);
                                     //sommo di nuovo i meno fino a stare sotto o uguale ai 39
                                     if (g == 0)
                                         iii = i;
@@ -478,8 +491,8 @@ namespace IRPAutobotti
 
                                 for (int q = 0; q < viaggio_temp.Count; q++)
                                 {
-                                    viaggio.Insert(n_viaggio, viaggio_temp.ToList<double>());
-                                    MioOrdineViaggio.Insert(n_viaggio, Mio_temp.ToList<double>());
+                                    viaggio.Insert(n_viaggio, viaggio_temp);
+                                    MioOrdineViaggio.Insert(n_viaggio, Mio_temp);
                                     //MioOrdineViaggio[n_viaggio][q] = Mio_temp[q];
                                 }
                                 for (int q = 0; q < j_temp.Count; q++)
@@ -489,8 +502,10 @@ namespace IRPAutobotti
                         }
                         //ABBIAMO UNA COPPIA ANDIAMO ALLA RICERCA DI UNA TERNA O MAGGIORE
                         //altri drop dal terzo in poi
-                        if(trovato==1&&nelWhile==2)
+                        Console.WriteLine("pre if(trovato==1 && nelWhile==2) --> trovato: " + trovato + " | nelWhile: " + nelWhile);
+                        if (trovato==1 && nelWhile==2)
                         {
+                            Console.WriteLine("if(trovato==1 && nelWhile==2)");
                             trovato = 0;
                             int zz = 3;
                             temp = new double[maschera.Length];
@@ -502,10 +517,13 @@ namespace IRPAutobotti
                             j = temp.ToList().IndexOf(M);
                             while(trovato == 0 && M > 0 && zz < MAXDROP)
                             {
+                                Console.WriteLine("while2");
                                 for(int z = zz; z < MAXDROP; z++)
                                 {
-                                    for(int pv = 0; pv < j_temp.Count; pv++)
+                                    Console.WriteLine("for1");
+                                    for (int pv = 0; pv < j_temp.Count; pv++)
                                     {
+                                        Console.WriteLine("for2");
                                         int k = j_temp[pv];
 
                                         temp = new double[maschera.Length];
@@ -514,7 +532,7 @@ namespace IRPAutobotti
                                             temp[o] = valore_ord[k, o] * maschera[o];
                                         }
                                         double Mtmp = temp.Max();
-                                        int jtmp = temp.ToList().IndexOf(M);
+                                        int jtmp = temp.ToList().IndexOf(Mtmp);
                                         if(Mtmp>M)
                                         {
                                             M = Mtmp;
@@ -524,15 +542,20 @@ namespace IRPAutobotti
                                     trovato = 0;
                                     while(trovato==0 && M>0)
                                     {
+                                        Console.WriteLine("while3");
                                         if (da_servire[j] == 1 && giacenzapeso + ordinipeso_ord[j] <= capton[n_viaggio] &&
                                            giacenza + ordini_ord[j] <= capmax[n_viaggio])
                                         {
+                                            Console.WriteLine("if1 in while3");
                                             Int16 temposcaricaj = Convert.ToInt16(SCARICA + (SCARICALITRO * max_product_ord[j]));
                                             temposcarica = Convert.ToInt16(temposcarica + temposcaricaj);
                                             Int16 temposcaricasenzaj = Convert.ToInt16(temposcarica);
 
+                                            Console.WriteLine("Enter calcola_percorsoNew");
                                             Calcola_percorsoNewClass cpn = new Calcola_percorsoNewClass();
                                             Calcola_percorsoNewStruct cpnStruct = cpn.calcola_percorsoNew(baseCarico, od_pv_pv_completa, viaggio_temp, sequenza, lun, n_viaggio);
+                                            Console.WriteLine("Exit calcola_percorsoNew");
+
                                             //prendo il tempoguida precedente???
                                             Int16 tempoguidasenzaj = Convert.ToInt16(tempoguida);
                                             tempoguida = Convert.ToInt16(cpnStruct.lun[n_viaggio] * MINxKM);
@@ -543,9 +566,10 @@ namespace IRPAutobotti
                                             Int16 temp1 = Convert.ToInt16(TargheTempo[tt] + Convert.ToInt16(tempoGuidaOld) - tempo_temp);
                                             if (temp1 >= 0)
                                             {
+                                                Console.WriteLine("if (temp1) >= 0");
                                                 drop++;
-                                                viaggio_temp[drop] = pv_ord[j];
-                                                Mio_temp[drop] = MioOrdine_ord[j];
+                                                viaggio_temp.Insert(drop, pv_ord[j]);
+                                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
                                                 maschera[j] = 0;
@@ -557,6 +581,7 @@ namespace IRPAutobotti
                                             }
                                             else
                                             {
+                                                Console.WriteLine("else if (temp1) >= 0");
                                                 maschera[j] = 0;
                                                 int k = i;
 
@@ -746,9 +771,10 @@ namespace IRPAutobotti
                                 Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
                             g = 0;
                             ScompartaturaClass sc = new ScompartaturaClass();
-
+                            Console.WriteLine("Pre-while scompartatura");
                             while (sc.Scompartatura(IdM[(int)TargheViaggi[n_viaggio]], Quantita[n_viaggio], MENOMILLE, conn) != 1 && g < viaggio_temp.Count)
                             {
+                                Console.WriteLine("Enter while scompartatura");
                                 t = 0;
                                 if (g == 0)
                                     iii = i;
@@ -856,8 +882,8 @@ namespace IRPAutobotti
                                     tempo_temp = Convert.ToInt16(tempoguida + temposcarica);
                                     drop++;
                                     trovato = 1;
-                                    viaggio_temp[drop] = pv_ord[j];
-                                    Mio_temp[drop] = MioOrdine_ord[j];
+                                    viaggio_temp.Insert(drop, pv_ord[j]);
+                                    Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                     j_temp.Insert(drop - 1, j);
                                     da_servire[j] = 0;
                                     maschera[j] = 0;
@@ -930,8 +956,8 @@ namespace IRPAutobotti
                                             if (temp1 >= 0)
                                             {
                                                 drop++;
-                                                viaggio_temp[drop] = pv_ord[j];
-                                                Mio_temp[drop] = MioOrdine_ord[j];
+                                                viaggio_temp.Insert(drop, pv_ord[j]);
+                                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
                                                 maschera[j] = 0;
