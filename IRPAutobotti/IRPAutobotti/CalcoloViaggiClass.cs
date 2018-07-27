@@ -71,10 +71,10 @@ namespace IRPAutobotti
                 Targhe[i] = targa[i];
             }
             List<double> viaggio_temp = new List<double>();
-            List<double> Mio_temp = new List<double>();
+            List<double> Mio_temp;
             Int16 tempo_temp=0;
             List<double> lun = new List<double>();
-            List<int> j_temp = new List<int>();
+            List<int> j_temp;
             List<double> giacenza_stored = new List<double>();
             List<double> giacenzapeso_stored = new List<double>();
             List<string> Quantita = new List<string>();
@@ -94,6 +94,10 @@ namespace IRPAutobotti
                 giacenzapeso = 0;
                 int fineviaggio = 0;
                 //
+                viaggio_temp = new List<double>();
+                Mio_temp = new List<double>();
+                j_temp = new List<int>();
+                tempo_temp = 0;
                 int NoMezzi = 0;
                 int drop = 0;
                 Int16 tempoGuidaOld = 0;
@@ -101,7 +105,6 @@ namespace IRPAutobotti
                 int t = 0;
                 if(da_servire[i]==1)
                 {
-                    Console.WriteLine(t);
                     n_viaggio++;
                     if (n_viaggio == 14)
                         t = 1;
@@ -184,7 +187,7 @@ namespace IRPAutobotti
                             {
                                 nelWhile = 2;
                                 drop++;
-                                viaggio_temp[drop] = pv_ord[j];
+                                viaggio_temp.Insert(drop, pv_ord[j]);
                                 Mio_temp[drop] = MioOrdine_ord[j];
                                 j_temp.Insert(drop - 1, j);
                                 da_servire[j] = 0;
@@ -214,7 +217,7 @@ namespace IRPAutobotti
                                         TargheViaggi[n_viaggio]=targa[n_viaggio_temp];
                                         ContaTarghe[p]++;
                                         drop++;
-                                        viaggio_temp[drop] = pv_ord[j];
+                                        viaggio_temp.Insert(drop, pv_ord[j]);
                                         Mio_temp[drop] = MioOrdine_ord[j];
                                         j_temp.Insert(drop - 1, j);
                                         da_servire[j] = 0;
@@ -544,7 +547,7 @@ namespace IRPAutobotti
                                             if (temp1 >= 0)
                                             {
                                                 drop++;
-                                                viaggio_temp[drop] = pv_ord[j];
+                                                viaggio_temp.Insert(drop, pv_ord[j]);
                                                 Mio_temp[drop] = MioOrdine_ord[j];
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
@@ -818,12 +821,17 @@ namespace IRPAutobotti
                             giacenza_stored[n_viaggio] = giacenza;
                             giacenzapeso_stored[n_viaggio] = giacenzapeso;
                             tempo[n_viaggio] = Convert.ToInt16(tempo_temp);
-
                             for (int q = 0; q < viaggio_temp.Count; q++)
+                            {
+                                viaggio.Insert(n_viaggio, viaggio_temp.ToList<double>());
+                                MioOrdineViaggio.Insert(n_viaggio, Mio_temp.ToList<double>());
+                                //MioOrdineViaggio[n_viaggio][q] = Mio_temp[q];
+                            }
+                            /*for (int q = 0; q < viaggio_temp.Count; q++)
                             {
                                 viaggio[n_viaggio][q] = viaggio_temp[q];
                                 MioOrdineViaggio[n_viaggio][q] = Mio_temp[q];
-                            }
+                            }*/
                             for (int q = 0; q < j_temp.Count; q++)
                                 da_servire[j_temp[q]] = 0;
                             trovato = 1;
@@ -856,7 +864,7 @@ namespace IRPAutobotti
                                     tempo_temp = Convert.ToInt16(tempoguida + temposcarica);
                                     drop++;
                                     trovato = 1;
-                                    viaggio_temp[drop] = pv_ord[j];
+                                    viaggio_temp.Insert(drop, pv_ord[j]);
                                     Mio_temp[drop] = MioOrdine_ord[j];
                                     j_temp.Insert(drop - 1, j);
                                     da_servire[j] = 0;
@@ -930,7 +938,7 @@ namespace IRPAutobotti
                                             if (temp1 >= 0)
                                             {
                                                 drop++;
-                                                viaggio_temp[drop] = pv_ord[j];
+                                                viaggio_temp.Insert(drop, pv_ord[j]);
                                                 Mio_temp[drop] = MioOrdine_ord[j];
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
@@ -1205,12 +1213,17 @@ namespace IRPAutobotti
                         giacenza_stored[n_viaggio] = giacenza;
                         giacenzapeso_stored[n_viaggio] = giacenzapeso;
                         tempo[n_viaggio] = Convert.ToInt16(tempo_temp);
-
                         for (int q = 0; q < viaggio_temp.Count; q++)
+                        {
+                            viaggio.Insert(n_viaggio, viaggio_temp.ToList<double>());
+                            MioOrdineViaggio.Insert(n_viaggio, Mio_temp.ToList<double>());
+                            //MioOrdineViaggio[n_viaggio][q] = Mio_temp[q];
+                        }
+                        /*for (int q = 0; q < viaggio_temp.Count; q++)
                         {
                             viaggio[n_viaggio][q] = viaggio_temp[q];
                             MioOrdineViaggio[n_viaggio][q] = Mio_temp[q];
-                        }
+                        }*/
                         for (int q = 0; q < j_temp.Count; q++)
                             da_servire[j_temp[q]] = 0;
                     }
