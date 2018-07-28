@@ -22,18 +22,25 @@ namespace IRPAutobotti
             "Database=Matlab;" +
             "Integrated Security=True";
 
+            Console.WriteLine("Enter CaricaSettings");
             CaricaSettingsClass caricaSettingsClass = new CaricaSettingsClass();
             // [GIACENZA_MIN,dens_BS,dens_D,dens_B95,dens_GA,dens_BD,CARICA,SCARICA,SCARICALITRO,V_MEDIA,MINxKM,TEMPO_MAX,MAXDROP,KM_MIN,DISTANZA_MAX_PVPV,ELLISSE,beta,esponente]
             CaricaSettingsStruct settings = caricaSettingsClass.CaricaSettings(baseCarico, conn);
-            
+            Console.WriteLine("Exit CaricaSettings");
+
+            Console.WriteLine("Enter idSettingsVariabili");
             IdSettingsVariabiliClass idSettingsVariabiliClass = new IdSettingsVariabiliClass();
             // [IdSettings,MENOMILLE,RIEMPIMENTOMAX]
             IdSettingsVariabiliStruct idSettings = idSettingsVariabiliClass.IdSettingsVariabili(baseCarico, conn);
+            Console.WriteLine("Exit idSettingsVariabili");
 
+            Console.WriteLine("Enter disponibilitaMezzi");
             //prendo i camion disponibili per la giornata
             DisponibilitaMezziClass disponibilitaMezziClass = new DisponibilitaMezziClass();
             // [IdM,scomparti,captontemp,targatemp1,temp2]
             DisponibilitaMezziStruct disponibilitaMezzi = disponibilitaMezziClass.DisponibilitaMezzi(attivo, data, baseCarico, conn);
+            Console.WriteLine("Exit disponibilitaMezzi");
+
             double[,] scomparti = disponibilitaMezzi.scomparti;
             double[] capmaxtemp = new double[scomparti.Length];
             for (int i = 0; i < scomparti.GetLength(0); i++)
@@ -62,11 +69,13 @@ namespace IRPAutobotti
             for (int i = 0; i < captontemp.Length; i++)
                 captontemp[i] /= 10;
 
-
+            Console.WriteLine("Enter prendereOrdini");
             // prendo gli ordini per la giornata
             // [MioOrdine,pv,ordini,ordiniD,ordiniBD,ordiniB95,ordiniBS,ordiniAlpino,ordiniBluAlpino,ordinipiumeno]
             PrendereOrdiniClass prendereOrdiniClass = new PrendereOrdiniClass();
             PrendereOrdiniStruct ordiniStruct = prendereOrdiniClass.PrendereOrdini(baseCarico, data, pesoDivisioneOrdini, conn);
+            Console.WriteLine("Exit prendereOrdini");
+
             var n_ordini = ordiniStruct.ordini.Length;
 
             // quantita massima per ogni PV, per il rate di scarico (successivo)
@@ -91,31 +100,41 @@ namespace IRPAutobotti
                 prodottomax[i] = productsArray.Max();
             }
 
+            Console.WriteLine("Enter prendiPreferenze");
             // prendo la matrice delle preferenze
             PrendiPreferenzeClass prendiPreferenzeClass = new PrendiPreferenzeClass();
             PrendiPreferenzeStruct preferenze = prendiPreferenzeClass.PrendiPreferenze(baseCarico, conn);
+            Console.WriteLine("Exit prendiPreferenze");
 
+
+            Console.WriteLine("Enter ordinamentoMezzi");
             //Ordinamento mezzi
             // ordino in modo crescente e decrescente i miei mezzi per tonellate e capacità in KL
             //[capton, capmax, targa]
             OrdinamentoMezziClass ordinamentoMezziClass = new OrdinamentoMezziClass();
             OrdinamentoMezziStruct ordinamentoMezzi = ordinamentoMezziClass.OrdinamentoMezzi(captontemp, capmaxtemp, targatemp);
+            Console.WriteLine("Exit ordinamentoMezzi");
 
+            Console.WriteLine("Enter prendiDistanze");
             // Caricamento matrici delle distanze
             // [od_dep_pv,od_pv_dep,od_pv_pv,od_pv_pv_completa,preferenza_pv_pv]
             PrendiDistanzeClass prendiDistanzeClass = new PrendiDistanzeClass();
             PrendiDistanzeStruct distanze = prendiDistanzeClass.PrendiDistanze(baseCarico, data, n_ordini, ordiniStruct.pv, preferenze.preferenze, conn);
-            double[] peso = new double[n_ordini];
+            Console.WriteLine("Exit prendiDistanze");
+
             var ordinati = ordiniStruct.ordini;
             var targaOriginale = ordinamentoMezzi.targa;
 
+            Console.WriteLine("Enter createRunner");
             CreateRunnerClass createRunnerClass = new CreateRunnerClass();
             int IdRunner = createRunnerClass.CreateRunner("sacile", baseCarico, data, conn);
+            Console.WriteLine("Exit createRunner");
 
             // -----------------Chiusura connessione close(conn)------------------------
 
-            for(int t = 0; t < idSettings.Id.Length; t++)
+            for (int t = 0; t < idSettings.Id.Length; t++)
             {
+                Console.WriteLine("-------------- t is: " + t);
                 var n_OrdiniOriginali = n_ordini;
                 var OrdiniOriginali = ordiniStruct.ordini;
                 var OrdiniOriginaliD = ordiniStruct.ordiniD;
@@ -126,28 +145,35 @@ namespace IRPAutobotti
                 var OrdiniOriginaliBluAlpino = ordiniStruct.ordiniBluAlpino;
                 var MioOrdineOriginale = ordiniStruct.MioOrdine;
 
+                Console.WriteLine("Enter ordiniMenoMille");
                 // TOGLIAMO MILLE A TUTTI I PRODOTTI CHA HANNO UNA QUANTITA SOPRA LA SOGLIA MENOMILLE
                 // [ordini, ordiniD, ordiniBD, ordiniB95, ordiniBS, ordiniAlpino, ordiniBluAlpino, peso]
                 OrdiniMenoMilleClass ordiniMenoMilleClass = new OrdiniMenoMilleClass();
                 double[] MENOMILLE = idSettings.MENOMILLE;
                 OrdiniMenoMilleStruct ordiniMenoMille = ordiniMenoMilleClass.OrdiniMenoMille(n_OrdiniOriginali, MENOMILLE[t], OrdiniOriginali, OrdiniOriginaliD, OrdiniOriginaliBD, OrdiniOriginaliB95, OrdiniOriginaliBS, OrdiniOriginaliAlpino, OrdiniOriginaliBluAlpino, settings.dens_D, 
                     settings.dens_BD, settings.dens_BS, settings.dens_B95);
+                Console.WriteLine("Exit ordiniMenoMille");
 
+                Console.WriteLine("Enter assegnazionePriorita");
                 //ASSEGNO PRIORITA'
                 // sommo l'andata e il ritorno di un pv dalla base, e prendo quello che ha valore maggiore
                 // [p, Valore, od_dep_media]
                 AssegnazionePrioritaClass assegnazionePrioritaClass = new AssegnazionePrioritaClass();
-                AssegnazionePrioritaStruct priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, peso, maxcap, ordiniMenoMille.ordini, settings.esponente, 
+                AssegnazionePrioritaStruct priorita = assegnazionePrioritaClass.AssegnazionePriorita(distanze.od_dep_pv, distanze.od_pv_dep, distanze.od_pv_pv, n_OrdiniOriginali, ordiniMenoMille.peso, maxcap, ordiniMenoMille.ordini, settings.esponente, 
                     settings.ELLISSE, settings.beta, distanze.preferenza_pv_pv, settings.DISTANZA_MAX_PVPV);
+                Console.WriteLine("Exit assegnazionePriorita");
 
+                Console.WriteLine("Enter ordinamentoPV");
                 //ORDINAMENTO DEI PV
                 // ordinamento dal più distante
                 // ordino in maniera decrescente per il valore della prima colonna
                 // [MioOrdine_ord, ordini_ord, pv_ord, valore_ord, od_pv_pv_ord, od_dep_pv_ord, od_pv_dep_ord, ordinipeso_ord, ordini_piumeno_ord, max_product_ord, ordiniD_ord, ordiniBD_ord, ordiniB95_ord, ordiniBS_ord, ordiniAlpino_ord, ordiniBluAlpino_ord, ordinati_ord]
                 OrdinamentoPVClass ordinamentoPVClass = new OrdinamentoPVClass();
                 OrdinamentoPVStruct ordinamentoPV = ordinamentoPVClass.OrdinamentoPV(priorita.od_dep_media, ordiniStruct.pv, ordiniMenoMille.ordini, priorita.Valore, distanze.od_pv_pv, n_OrdiniOriginali, distanze.od_dep_pv, distanze.od_pv_dep, ordiniStruct.ordinipiumeno,
-                    prodottomax, peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
+                    prodottomax, ordiniMenoMille.peso, ordiniStruct.ordiniD, ordiniStruct.ordiniBD, ordiniStruct.ordiniB95, ordiniStruct.ordiniBS, ordiniStruct.ordiniAlpino, ordiniStruct.ordiniBluAlpino, ordiniStruct.MioOrdine, ordinati);
+                Console.WriteLine("Exit ordinamentoPV");
 
+                Console.WriteLine("Enter calcolatoViaggi");
                 // ALGORITMO
                 /*conn.ConnectionString =
                     "Server=LAPTOP-DT8KB2TQ;" +
@@ -159,8 +185,10 @@ namespace IRPAutobotti
                     ordinamentoPV.od_dep_pv_ord, ordinamentoPV.od_pv_dep_ord, ordinamentoPV.od_pv_pv_ord, settings.MINxKM, settings.TEMPO_MAX, ordinamentoPV.valore_ord, ordinamentoPV.ordini_ord, ordinamentoPV.ordiniD_ord, ordinamentoPV.ordiniB95_ord, ordinamentoPV.ordiniBD_ord, ordinamentoPV.ordiniBS_ord, 
                     ordinamentoPV.ordiniAlpino_ord, ordinamentoPV.ordiniBluAlpino_ord, ordinamentoPV.ordini_piumeno_ord, ordinamentoPV.MioOrdine_ord, settings.GIACENZA_MIN, settings.KM_MIN, ordinamentoMezzi.capmax, ordinamentoMezzi.capton, settings.dens_D, settings.dens_B95, settings.dens_BD, settings.dens_BS, 
                     settings.MAXDROP, MENOMILLE[t], conn);
+                Console.WriteLine("Exit calcolatoViaggi");
                 //close(conn);
 
+                Console.WriteLine("Enter createVersion");
                 // Inserisci nel db
                 // TargheTempo = TEMPO_MAX * ones(length(IdM), 1);
                 /*conn.ConnectionString =
@@ -170,6 +198,7 @@ namespace IRPAutobotti
                 // [IdRunner] = CreateRunner('sacile', baseCarico, data, conn);
                 CreateVersionClass createVersionClass = new CreateVersionClass();
                 int IdVersione = createVersionClass.CreateVersion(baseCarico, "sacile", data, idSettings.Id[t], IdRunner, conn);
+                Console.WriteLine("Exit createVersion");
                 // close(conn)
 
                 int ii = 1;
@@ -189,13 +218,17 @@ namespace IRPAutobotti
                     int IdViaggio;
                     if (ii <= capton.Length && targheViaggi[ii] != -1)
                     {
+                        Console.WriteLine("Enter createViaggio");
                         CreateViaggioClass createViaggioClass = new CreateViaggioClass();
                         IdViaggio = createViaggioClass.CreateViaggio(IdVersione, data, lun[ii], tempo[ii], IdM[(int)targheViaggi[ii]], conn);
+                        Console.WriteLine("Exit createViaggio");
                     }
                     else
                     {
+                        Console.WriteLine("Enter createViaggioNoMezzo");
                         CreateViaggioNoMezzoClass createViaggioNoMezzoClass = new CreateViaggioNoMezzoClass();
                         IdViaggio = createViaggioNoMezzoClass.CreateViaggioNoMezzo(IdVersione, data, lun[ii], tempo[ii], -1, conn);
+                        Console.WriteLine("Enter createViaggioNoMezzo");
                     }
                     //close(conn);
 
@@ -224,8 +257,11 @@ namespace IRPAutobotti
                                    ordinamentoPV.ordiniBS_ord[posizione[k]].ToString() + "," +
                                    ordinamentoPV.ordiniAlpino_ord[posizione[k]].ToString() + "," +
                                    ordinamentoPV.ordiniBluAlpino_ord[posizione[k]].ToString();
+
+                                Console.WriteLine("Enter riempiViaggio");
                                 RiempiViaggioClass riempiViaggio = new RiempiViaggioClass();
                                 riempiViaggio.RiempiViaggio(IdViaggio, (int)viaggio[ii][j], j, Quantita, conn);
+                                Console.WriteLine("Exit riempiViaggio");
                                 conn.Close();
                             }
                         }
@@ -237,8 +273,11 @@ namespace IRPAutobotti
                 "Server=LAPTOP-DT8KB2TQ;" +
                 "Database=Matlab;" +
                 "Integrated Security=True";
+
+                Console.WriteLine("Enter cambiaNotifica");
                 CambiaNotificaClass cambiaNotifica = new CambiaNotificaClass();
                 cambiaNotifica.CambiaNotifica(IdRunner, IdVersione, conn);
+                Console.WriteLine("Exit cambiaNotifica");
                 conn.Close();
                 Console.WriteLine("Fine");
             }

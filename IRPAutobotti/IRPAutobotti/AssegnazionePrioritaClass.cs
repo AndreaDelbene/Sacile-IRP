@@ -27,20 +27,26 @@ namespace IRPAutobotti
             {
                 od_dep_media[i]= (od_dep_pv[i] + od_pv_dep[i]);
             }
-           
-            object[] returnObj = new object[3];
-            for (int i=0;i<n_ordini;i++)
+
+            for(int i = 0; i < n_ordini; i++)
             {
-                for(int j=0;j<n_ordini;j++)
+                for(int j = 0; j < n_ordini; j++)
                 {
                     //normalizzo la coppia per la quantità max di un mezzo tipico
                     p[i, j] = (peso[i] + peso[j]) / (maxcap);
                     //p[i,j] = (ordini[i] + ordini[j]) / (capmax);
-                    if(p[i, j]>1 || (ordini[i] + ordini[j])>40)
+                    if (p[i, j] > 1 || (ordini[i] + ordini[j]) > 40)
                     {
                         //i due pv nn sono accoppiati bene quindi "li disaccoppio"
                         p[i, j] = 0;
                     }
+                }
+            }
+           
+            for (int i=0;i<n_ordini;i++)
+            {
+                for(int j=0;j<n_ordini;j++)
+                {
                     //Valore è la matrice di quanto sta bene la coppiata del pv i e pv j
                     Valore[i, j] = -1;
                     if(od_pv_pv[i, j]>0)
