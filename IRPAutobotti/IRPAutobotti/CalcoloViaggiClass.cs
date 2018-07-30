@@ -188,7 +188,7 @@ namespace IRPAutobotti
                                 nelWhile = 2;
                                 drop++;
                                 viaggio_temp.Insert(drop, pv_ord[j]);
-                                Mio_temp[drop] = MioOrdine_ord[j];
+                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                 j_temp.Insert(drop - 1, j);
                                 da_servire[j] = 0;
                                 maschera[j] = 0;
@@ -203,9 +203,9 @@ namespace IRPAutobotti
                             else //non ho trovato un pv che possa andare bene, prima di cambiare il pv provo a vedere il mezzo se può essere cambiato
                             {
                                 int trovato1 = 0;
-                                int p = 1;
-                                int n_viaggio_temp = 1;
-                                while(trovato1 == 0 && p<=nTarghe)     //PRIMA ERA trovato1 != 0
+                                int p = 0;
+                                int n_viaggio_temp = 0;
+                                while(trovato1 == 0 && p<nTarghe)     //PRIMA ERA trovato1 != 0
                                 {
                                     if (Convert.ToInt16(TargheTempo[p]-tempo_temp)>=0 && giacenzapeso+ordinipeso_ord[j]<=capton[n_viaggio_temp] &&
                                         giacenza+ordini_ord[j]<=capmax[n_viaggio_temp] && ContaTarghe[p]<=2)
@@ -218,7 +218,7 @@ namespace IRPAutobotti
                                         ContaTarghe[p]++;
                                         drop++;
                                         viaggio_temp.Insert(drop, pv_ord[j]);
-                                        Mio_temp[drop] = MioOrdine_ord[j];
+                                        Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                         j_temp.Insert(drop - 1, j);
                                         da_servire[j] = 0;
                                         maschera[j] = 0;
@@ -262,9 +262,9 @@ namespace IRPAutobotti
                             else
                             {
                                 int trovato1 = 0;
-                                int p = 1;
-                                int n_viaggio_temp = 1;
-                                while (trovato1 == 0 && p <= nTarghe)
+                                int p = 0;
+                                int n_viaggio_temp = 0;
+                                while (trovato1 == 0 && p < nTarghe)
                                 {
                                     if (Convert.ToInt16(TargheTempo[p] - tempo_temp) >= 0 && giacenzapeso <= capton[n_viaggio_temp] &&
                                         giacenza <= capmax[n_viaggio_temp] && ContaTarghe[p] <= 2)
@@ -464,8 +464,8 @@ namespace IRPAutobotti
                                         t = 1;
                                     }
                                     g++;
-                                    Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
-                                    Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
+                                    Quantita.Insert(n_viaggio, Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
+                                    Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString());
                                 }
                                 double TempPrecD = Temp_D;
                                 double TempPrecB = Temp_B;
@@ -473,8 +473,8 @@ namespace IRPAutobotti
                                 double TempPrecBS = Temp_BS;
                                 double TempPrecAlpino = Temp_Alpino;
                                 double TempPrecBAlpino = Temp_BAlpino;
-                                Quantita[n_viaggio] = TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
-                                    TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString();
+                                Quantita.Insert(n_viaggio, TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
+                                    TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString());
                                 giacenza_stored.Insert(n_viaggio, giacenza);
                                 giacenzapeso_stored.Insert(n_viaggio, giacenzapeso);
                                 tempo.Insert(n_viaggio, Convert.ToInt16(tempo_temp));
@@ -495,7 +495,7 @@ namespace IRPAutobotti
                         if(trovato==1&&nelWhile==2)
                         {
                             trovato = 0;
-                            int zz = 3;
+                            int zz = 2;
                             temp = new double[maschera.Length];
                             for (o = 0; o < maschera.Length; o++)
                             {
@@ -517,7 +517,7 @@ namespace IRPAutobotti
                                             temp[o] = valore_ord[k, o] * maschera[o];
                                         }
                                         double Mtmp = temp.Max();
-                                        int jtmp = temp.ToList().IndexOf(M);
+                                        int jtmp = temp.ToList().IndexOf(Mtmp);
                                         if(Mtmp>M)
                                         {
                                             M = Mtmp;
@@ -548,7 +548,7 @@ namespace IRPAutobotti
                                             {
                                                 drop++;
                                                 viaggio_temp.Insert(drop, pv_ord[j]);
-                                                Mio_temp[drop] = MioOrdine_ord[j];
+                                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
                                                 maschera[j] = 0;
@@ -584,7 +584,7 @@ namespace IRPAutobotti
                                                         temp[o] = valore_ord[k, o] * maschera[o];
                                                     }
                                                     double Mtmp = temp.Max();
-                                                    int jtmp = temp.ToList().IndexOf(M);
+                                                    int jtmp = temp.ToList().IndexOf(Mtmp);
                                                     if (Mtmp > M)
                                                     {
                                                         M = Mtmp;
@@ -616,7 +616,7 @@ namespace IRPAutobotti
                                                     temp[o] = valore_ord[k, o] * maschera[o];
                                                 }
                                                 double Mtmp = temp.Max();
-                                                int jtmp = temp.ToList().IndexOf(M);
+                                                int jtmp = temp.ToList().IndexOf(Mtmp);
                                                 if (Mtmp > M)
                                                 {
                                                     M = Mtmp;
@@ -745,8 +745,8 @@ namespace IRPAutobotti
                                 Temp_BAlpino += ordiniBluAlpino_ord[iii];
                             }
 
-                            Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
-                                Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
+                            Quantita.Insert(n_viaggio, Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
+                                Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString());
                             g = 0;
                             ScompartaturaClass sc = new ScompartaturaClass();
 
@@ -807,8 +807,8 @@ namespace IRPAutobotti
                                     t = 1;
                                 }
                                 g++;
-                                Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
-                                Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
+                                Quantita.Insert(n_viaggio, Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
+                                Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString());
                             }
                             double TempPrecD = Temp_D;
                             double TempPrecB = Temp_B;
@@ -816,11 +816,11 @@ namespace IRPAutobotti
                             double TempPrecBS = Temp_BS;
                             double TempPrecAlpino = Temp_Alpino;
                             double TempPrecBAlpino = Temp_BAlpino;
-                            Quantita[n_viaggio] = TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
-                                TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString();
-                            giacenza_stored[n_viaggio] = giacenza;
-                            giacenzapeso_stored[n_viaggio] = giacenzapeso;
-                            tempo[n_viaggio] = Convert.ToInt16(tempo_temp);
+                            Quantita.Insert(n_viaggio, TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
+                                TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString());
+                            giacenza_stored.Insert(n_viaggio, giacenza);
+                            giacenzapeso_stored.Insert(n_viaggio, giacenzapeso);
+                            tempo.Insert(n_viaggio, Convert.ToInt16(tempo_temp));
                             for (int q = 0; q < viaggio_temp.Count; q++)
                             {
                                 viaggio.Insert(n_viaggio, viaggio_temp.ToList<double>());
@@ -865,7 +865,7 @@ namespace IRPAutobotti
                                     drop++;
                                     trovato = 1;
                                     viaggio_temp.Insert(drop, pv_ord[j]);
-                                    Mio_temp[drop] = MioOrdine_ord[j];
+                                    Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                     j_temp.Insert(drop - 1, j);
                                     da_servire[j] = 0;
                                     maschera[j] = 0;
@@ -886,7 +886,7 @@ namespace IRPAutobotti
                             }
 
                             trovato = 0;
-                            int zz = 3;
+                            int zz = 2;
                             temp = new double[maschera.Length];
                             for (o = 0; o < maschera.Length; o++)
                             {
@@ -908,7 +908,7 @@ namespace IRPAutobotti
                                             temp[o] = valore_ord[k, o] * maschera[o];
                                         }
                                         double Mtmp = temp.Max();
-                                        int jtmp = temp.ToList().IndexOf(M);
+                                        int jtmp = temp.ToList().IndexOf(Mtmp);
                                         if (Mtmp > M)
                                         {
                                             M = Mtmp;
@@ -939,7 +939,7 @@ namespace IRPAutobotti
                                             {
                                                 drop++;
                                                 viaggio_temp.Insert(drop, pv_ord[j]);
-                                                Mio_temp[drop] = MioOrdine_ord[j];
+                                                Mio_temp.Insert(drop, MioOrdine_ord[j]);
                                                 j_temp.Insert(z - 1, j);
                                                 da_servire[j] = 0;
                                                 maschera[j] = 0;
@@ -975,7 +975,7 @@ namespace IRPAutobotti
                                                         temp[o] = valore_ord[k, o] * maschera[o];
                                                     }
                                                     double Mtmp = temp.Max();
-                                                    int jtmp = temp.ToList().IndexOf(M);
+                                                    int jtmp = temp.ToList().IndexOf(Mtmp);
                                                     if (Mtmp > M)
                                                     {
                                                         M = Mtmp;
@@ -1007,7 +1007,7 @@ namespace IRPAutobotti
                                                     temp[o] = valore_ord[k, o] * maschera[o];
                                                 }
                                                 double Mtmp = temp.Max();
-                                                int jtmp = temp.ToList().IndexOf(M);
+                                                int jtmp = temp.ToList().IndexOf(Mtmp);
                                                 if (Mtmp > M)
                                                 {
                                                     M = Mtmp;
@@ -1137,8 +1137,8 @@ namespace IRPAutobotti
                             Temp_BAlpino += ordiniBluAlpino_ord[iii];
                         }
 
-                        Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
-                            Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
+                        Quantita.Insert(n_viaggio, Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
+                            Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString());
                         g = 0;
                         ScompartaturaClass sc = new ScompartaturaClass();
 
@@ -1199,8 +1199,8 @@ namespace IRPAutobotti
                                 t = 1;
                             }
                             g++;
-                            Quantita[n_viaggio] = Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
-                            Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString();
+                            Quantita.Insert(n_viaggio, Temp_D.ToString() + "," + Temp_BD.ToString() + "," + Temp_BS.ToString() + "," +
+                            Temp_B.ToString() + "," + Temp_Alpino.ToString() + "," + Temp_BAlpino.ToString());
                         }
                         double TempPrecD = Temp_D;
                         double TempPrecB = Temp_B;
@@ -1208,11 +1208,11 @@ namespace IRPAutobotti
                         double TempPrecBS = Temp_BS;
                         double TempPrecAlpino = Temp_Alpino;
                         double TempPrecBAlpino = Temp_BAlpino;
-                        Quantita[n_viaggio] = TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
-                            TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString();
-                        giacenza_stored[n_viaggio] = giacenza;
-                        giacenzapeso_stored[n_viaggio] = giacenzapeso;
-                        tempo[n_viaggio] = Convert.ToInt16(tempo_temp);
+                        Quantita.Insert(n_viaggio, TempPrecD.ToString() + "," + TempPrecBD.ToString() + "," + TempPrecBS.ToString() + "," +
+                            TempPrecB.ToString() + "," + TempPrecAlpino.ToString() + "," + TempPrecBAlpino.ToString());
+                        giacenza_stored.Insert(n_viaggio, giacenza);
+                        giacenzapeso_stored.Insert(n_viaggio, giacenzapeso);
+                        tempo.Insert(n_viaggio, Convert.ToInt16(tempo_temp));
                         for (int q = 0; q < viaggio_temp.Count; q++)
                         {
                             viaggio.Insert(n_viaggio, viaggio_temp.ToList<double>());

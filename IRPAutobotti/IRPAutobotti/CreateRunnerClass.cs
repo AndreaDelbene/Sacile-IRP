@@ -15,7 +15,6 @@ namespace IRPAutobotti
 
             // connection
             SqlCommand comm = new SqlCommand();
-            SqlDataReader reader;
             comm.CommandText = "Matlab.BIS.createRunnerBySolution";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@generatore", login);

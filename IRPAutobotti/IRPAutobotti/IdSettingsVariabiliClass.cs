@@ -23,23 +23,22 @@ namespace IRPAutobotti
         { 
             //connection
             SqlCommand comm = new SqlCommand();
-            SqlDataReader reader;
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             comm.CommandText = "Matlab.BIS.getSettingVariabili";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_base", baseCarico);
             comm.Connection = conn;
-
             conn.Open();
 
-            reader = comm.ExecuteReader();
-            reader.Read();
-            int[] Id = (from IDataRecord r in reader
-                                 select (int)r["id"]
-                            ).ToArray();
+            comm.ExecuteNonQuery();
+
+            DataTable table = new DataTable();
+            adapter.Fill(table);
             
+            int[] Id = (from DataRow r in table.Rows select (int)r["id"]).ToArray();
+
             double[] MENOMILLE = new double[Id.Length];
             double[] RIEMPIMENTOMAX = new double[Id.Length];
-            reader.Close();
             conn.Close();
             comm.CommandText = "Matlab.BIS.getSettingVariabiliById";
             comm.CommandType = CommandType.StoredProcedure;
@@ -54,7 +53,8 @@ namespace IRPAutobotti
 
                 conn.Open();
 
-                reader = comm.ExecuteReader();
+                SqlDataReader reader = comm.ExecuteReader();
+
                 reader.Read();
 
                 string soglie = (string) reader["soglie"];

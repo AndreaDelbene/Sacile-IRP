@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace IRPAutobotti
@@ -13,7 +14,6 @@ namespace IRPAutobotti
         {
 
             SqlCommand comm = new SqlCommand();
-            SqlDataReader reader;
             comm.CommandText = "Matlab.BIS.createViaggioSolSacile";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_versione", IdVersione);
@@ -26,11 +26,13 @@ namespace IRPAutobotti
 
             conn.Open();
 
-            reader = comm.ExecuteReader();
-            
-            int IdViaggio = (int)reader["Data"];
+            comm.ExecuteNonQuery();
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
-            reader.Close();
+            int IdViaggio = (int)(Int64)table.Rows[0]["id"];
+            
             conn.Close();
             return IdViaggio;
         }

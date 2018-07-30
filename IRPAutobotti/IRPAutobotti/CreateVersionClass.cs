@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace IRPAutobotti
@@ -11,27 +12,23 @@ namespace IRPAutobotti
 
         public int CreateVersion(int baseCarico, string login, string data, int IdSetting, int IdRunner, SqlConnection conn)
         {
-
-
             SqlCommand comm = new SqlCommand();
-            SqlDataReader reader;
+
             comm.CommandText = "Matlab.BIS.createVersionSacile";
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.AddWithValue("@id_base", baseCarico);
-            comm.Parameters.AddWithValue("@generatore", login);
+            comm.Parameters.AddWithValue("@login", login);
             comm.Parameters.AddWithValue("@data", data);
             comm.Parameters.AddWithValue("@idSettingVariabili", IdSetting);
             comm.Parameters.AddWithValue("@id_runner", IdRunner);
             
             comm.Connection = conn;
 
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
             conn.Open();
-
-            reader = comm.ExecuteReader();
-
-           
-            int IdVersion = (int)reader["Data"];
-            reader.Close();
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            int IdVersion = (int)(Int64)table.Rows[0]["id"];
             conn.Close();
             return IdVersion;
         }

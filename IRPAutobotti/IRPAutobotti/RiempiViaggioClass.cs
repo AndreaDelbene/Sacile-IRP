@@ -10,15 +10,15 @@ namespace IRPAutobotti
             SqlCommand comm = new SqlCommand();
             comm.CommandText = "Matlab.BIS.RiempiViaggioSolZero";
             comm.CommandType = CommandType.StoredProcedure;
-            comm.Parameters.AddWithValue("@id_viaggio_pv", IdViaggio);
-            comm.Parameters.AddWithValue("@item", Pv);
+            comm.Parameters.AddWithValue("@id_viaggio", IdViaggio);
+            comm.Parameters.AddWithValue("@codPv", Pv);
             comm.Parameters.AddWithValue("@ordSosta", Ordinale);
             comm.Parameters.AddWithValue("@stringone", Kl);
             comm.Connection = conn;
 
             conn.Open();
 
-            comm.ExecuteReader();
+            comm.ExecuteNonQuery();
 
             conn.Close();
         }

@@ -10,26 +10,27 @@ namespace IRPAutobotti
 
         public int[] gtsp0(double[,] Pk)
         {
-            int n = Pk.GetLength(0); //n==m
+            int n = Pk.GetLength(0);//n==m
             int[] x = new int[n];
-            double[,] Pkp = Pk;
+            double[,] Pkp = new double[n, n];
+            Pkp = (double[,])Pk.Clone();
             x[0] = 0;
             Random rnd = new Random();
             for (int k=0;k<n-1;k++)
             {
                 for(int j=0;j<n;j++)
                 {
-                    Pkp[j, (int)x[k]] = 0;
+                    Pkp[j, x[k]] = 0;
                 }
 
-                for(int i=0;i<n;i++)
+                for (int i=0;i<n;i++)
                 {
-                    double temp = 0;
+                    double temp = 0.0;
                     for(int l=0;l<n;l++)
                     {
                         temp = temp + Pkp[i, l];
                     }
-                    if(temp!=0)
+                    if(temp!=0.0)
                     {
                         for (int l = 0; l < n; l++)
                         {
@@ -45,10 +46,10 @@ namespace IRPAutobotti
                 while (r > cc)
                 {
                     c++;
-                    cc = cc + Pk[(int)x[k], c];
+                    cc = cc + Pk[x[k], c];
                 }
                 x[k + 1] = c;
-                Pk = Pkp;
+                Pk = (double[,])Pkp.Clone();
             }
             return x;
         }

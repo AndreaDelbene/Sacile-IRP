@@ -19,34 +19,47 @@ namespace IRPAutobotti
 
         public TspStruct tsp(int N, double rho, double alpha, double[,] A, int traj)
         {
-            int[] I = new int[1];
+            int[] I = new int[N];
             //GetLength(0) ritorna il numero di colonne mentre con 1, il numero di righe
             int n = A.GetLength(1);
             double tol = 0.005;
             int z = 7;
             int[] kk = new int[n];
             for (int i = 0; i < n; i++)
-                kk[i] = i + 1;
+                kk[i] = i;
             int[] st = new int[z];  //inizializza un vettore lungo 7 di zeri
             double[,] Pold = new double[n, n];
 
             double[,] P = new double[n, n];
+            double[,] Ptemp = new double[n, n];
             if (traj == 0)
             {
                 //viene generata una matrice che ha la diagonale nulla
                 for (int i = 0; i < n; i++)
+                {
                     for (int j = 0; j < n; j++)
-                        if(i != j)
-                        {
-                            double value = 1.0 / (n - 1);
-                            P[i, j] = value;
-                        }
+                    {
+                        P[i, j] = 1.0 / (n - 1);
+                        if (i == j)
+                            Ptemp[i, j] = P[i, j];
+                        else
+                            Ptemp[i, j] = 0;
+                    }
+                }
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        Pold[i, j] = 0;
+                        P[i, j] = P[i, j] - Ptemp[i, j];
+                    }
+                }
             }
             else
             {
                 for (int i = 0; i < n; i++)
                     for (int j = 0; j < n; j++)
-                        P[i, j] = 1 / (n - 1);
+                        P[i, j] = 1.0 / (n);
             }
 
             int count = 1;
@@ -59,41 +72,33 @@ namespace IRPAutobotti
             stspClass stsp = new stspClass();
             while (Max(AbsOfDifference(P,Pold)) > tol)
             {
-                System.Console.WriteLine("while in tsp");
                 for (int i = 0; i < N; i++)
                 {
-                    System.Console.WriteLine("i loop: " + i);
                     if (traj == 0)
                     {
-                        System.Console.WriteLine("Enter gtsp0");
-                        X.Insert(i, gtsp0.gtsp0(P));
-                        System.Console.WriteLine("Exit gtsp0");
+                        X.Insert(i, (int[])gtsp0.gtsp0(P).Clone());
                     }
                     else
                     {
-                        System.Console.WriteLine("Enter gtsp1");
-                        X.Insert(i, gtsp1.gtsp1(P));
-                        System.Console.WriteLine("Exit gtsp1");
+                        X.Insert(i, (int[])gtsp1.gtsp1(P).Clone());
                     }
 
 
                     int[] x = new int[n];
                     if(traj == 0)
                     {
-                        System.Console.WriteLine("Enter stsp");
                         S[i] = stsp.stsp(X[i], A);
-                        System.Console.WriteLine("Exit stsp");
                     }
                     else
                     {
-                        int[] y = X[i];
+                        int[] y =(int[]) X[i].Clone();
                         int ki = 0;
                         for(int zi = 0; zi < n; zi++)
                         {
                             ki = y[zi];
                             x[ki] = zi;
                         }
-                        Y[i] = x;
+                        Y.Insert(i, (int[])x.Clone());
                         S[i] = stsp.stsp(x,A);
                     }
                 }
@@ -108,26 +113,24 @@ namespace IRPAutobotti
                     {
                         for (int j = 0; j < n; j++)
                         {
-                            int ss = 0;
+                            double ss = 0.0;
                             for (int k = 0; k < g; k++)
                             {
                                 int pos = search(X, I[k], i);
-                                if (pos != -1)
+                                int ii = kk[pos];
+                                if (ii < n - 1)
                                 {
-                                    int ii = kk[pos];
-                                    if (ii < n)
-                                    {
-                                        if (X[I[k]][ii] == j)
-                                            ss++;
-                                    }
-                                    else
-                                    {
-                                        if (X[I[k]][0] == j)
-                                            ss++;
-                                    }
+                                    
+                                    if (X[I[k]][ii + 1] == j)
+                                        ss++;
+                                }
+                                else
+                                {
+                                    if (X[I[k]][0] == j)
+                                        ss++;
                                 }
                             }
-                            w[i, j] = ss / g;
+                            w[i, j] = (double)ss / (double)g;
                         }
                     }
                 }
@@ -147,10 +150,10 @@ namespace IRPAutobotti
                         }
                     }
                 }
-                Pold = P;
-                P = calcP(alpha,w,(1 - alpha),P);
+                Pold = (double[,])P.Clone();
+                P = (double[,])calcP(alpha,w,(1 - alpha),P).Clone();
                 // slittamento del vettore di una posizione in alto rimuovendo la prima posizione ed aggiungendo nuovamente l'ultima
-                int[] temp = st;
+                int[] temp = (int[])st.Clone();
                 for (int i = 0; i < st.Length-1; i++)
                 {
                     st[i] = temp[i + 1];
@@ -165,14 +168,14 @@ namespace IRPAutobotti
             int[] pi = new int[X.Capacity];
             if(traj == 0)
             {
-                pi = X[I[0]];
+                pi = (int[])X[I[0]].Clone();
             }
             else
             {
-                pi = Y[I[0]];
+                pi = (int[])Y[I[0]].Clone();
             }
             tspStruct.lunghezza = S[g];
-            tspStruct.pi = pi;
+            tspStruct.pi = (int[])pi.Clone();
             return tspStruct;
         }
 
@@ -183,7 +186,7 @@ namespace IRPAutobotti
             double[,] result = new double[r,c];
             for (int i = 0; i < r; i++)
                 for (int j = 0; j < c; j++)
-                    result[i, j] = alpha * w[i, j] + v * p[i, j];
+                    result[i, j] = (alpha * w[i, j]) + (v * p[i, j]);
             return result;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -26,8 +27,9 @@ namespace IRPAutobotti
             cpnStruct.sequenza = sequenza;
             cpnStruct.n_viaggio = n_viaggio;
             //calcolo indicatori di prestazione
-            List<double> giro = viaggio_temp;
-            int g = giro.Count;
+            double[] giro = new double[viaggio_temp.Count];
+            viaggio_temp.CopyTo(giro);
+            int g = giro.Length;
             double[] temp_od_dep_pv = new double[g];
             double[] temp_od_pv_dep = new double[g];
             double[,] temp_od_pv_pv = new double[g, g];
@@ -90,20 +92,19 @@ namespace IRPAutobotti
                         od[i, j] = temp_od_pv_pv[i-1, j-1];
                 }
             }
-            System.Console.WriteLine("Enter tsp in percorsoNew");
             TspStruct returnStruct = new TspStruct();
             tspClass t = new tspClass();
             returnStruct = t.tsp(1000, 0.05, 0.8, od, 0);
-            System.Console.WriteLine("Exit tsp in percorsoNew");
 
             int[] tour = returnStruct.pi;
-            cpnStruct.lun[n_viaggio] = returnStruct.lunghezza;
-            for(int i=0;i<tour.Length;i++)
+            cpnStruct.lun.Insert(n_viaggio, returnStruct.lunghezza);
+            for (int i=0;i<tour.Length;i++)
             {
-                if(tour[i]==1)
-                    cpnStruct.sequenza[n_viaggio][i] = baseCarico;
+                if(tour[i]==0)
+                    cpnStruct.sequenza[n_viaggio].Insert(i, baseCarico);
                 else
-                    cpnStruct.sequenza[n_viaggio][i] = giro[tour[i]-1];
+                    cpnStruct.sequenza[n_viaggio].Insert(i, giro[tour[i] - 1]);
+                   
             }
             return cpnStruct;
         }
